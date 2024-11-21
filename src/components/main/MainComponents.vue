@@ -25,7 +25,7 @@ import Summary from "./Summary.vue";
   height: 80vh; /* Full viewport height */
   width: 97vw; /* Full viewport width */
   overflow: hidden; /* Prevent scroll if content overflows */
-  border-radius: 8px;
+  border-radius: 15px;
 }
 
 /* Menu section (70% width) */

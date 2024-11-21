@@ -1,11 +1,31 @@
 <template>
   <div>
-    <h1>Firestore Health Check</h1>
-    <p>Checking the health of Firestore...</p>
-    <p v-if="status === 'loading'">Loading...</p>
-    <p v-else-if="status === 'success'">Firestore is healthy!</p>
-    <p v-else-if="status === 'error'">Firestore is not healthy!</p>
-    <p v-else>Unknown status: {{ status }}</p>
+    <div>
+      <h1>Firestore Health Check</h1>
+      <p v-if="status === 'loading'">Checking the health of Firestore...</p>
+      <p v-else-if="status != 'loading'">
+        Checking the health of Firestore completed !
+      </p>
+      <div style="font-weight: 700; font-size: large">
+        <p v-if="status === 'loading'">Loading...</p>
+        <p v-else-if="status === 'success'" style="color: green">
+          Firestore is healthy!
+        </p>
+        <p v-else-if="status === 'error'" style="color: red">
+          Firestore is not healthy!
+        </p>
+        <p v-else style="color: yellow">Unknown status: {{ status }}</p>
+      </div>
+    </div>
+    <div style="margin-top: 5vh">
+      <!-- add Refresh Button to recheck the Health -->
+      <Button
+        @click="checkFirestoreHealth"
+        label="Refresh"
+        icon="pi pi-refresh"
+        :disabled="status === 'loading'"
+      />
+    </div>
   </div>
 </template>
 
@@ -19,6 +39,12 @@ const status = ref("loading");
 
 // Function to check Firestore health
 async function checkFirestoreHealth() {
+  console.log("Checking Firestore health...");
+  status.value = "loading"; // Update status to loading
+
+  // wait 2 seconds before checking the health
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
   try {
     // Perform a simple Firestore query
     const testCollection = collection(db, "healthCheck");
