@@ -22,7 +22,7 @@ import Summary from "./Summary.vue";
 .layout {
   display: flex;
   height: 80vh; /* Full viewport height */
-  width: 95vw; /* Full viewport width */
+  width: 97vw; /* Full viewport width */
   overflow: hidden; /* Prevent scroll if content overflows */
 }
 

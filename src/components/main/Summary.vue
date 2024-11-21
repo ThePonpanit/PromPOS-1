@@ -7,7 +7,7 @@
       </li>
     </ul>
     <p>Total: ${{ total }}</p>
-    <button @click="checkout">Checkout</button>
+    <Button @click="checkout">Checkout</Button>
   </div>
 </template>
 
@@ -30,7 +30,6 @@ function checkout() {
 
 <style scoped>
 .summary {
-  background-color: white;
   padding: 20px;
   border-radius: 8px;
   border: 1px solid #ddd;
@@ -54,18 +53,5 @@ function checkout() {
 .summary p {
   font-weight: bold;
   margin: 10px 0;
-}
-
-.summary button {
-  padding: 10px 15px;
-  background-color: hsla(160, 100%, 37%, 1);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.summary button:hover {
-  background-color: hsla(160, 100%, 47%, 1);
 }
 </style>
