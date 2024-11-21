@@ -17,3 +17,9 @@ exports.helloWorld = onRequest((request, response) => {
   logger.info("Hello logs!", { structuredData: true });
   response.send("Hello from Firebase!");
 });
+
+const { checkDatabase } = require("./health/checkDatabase");
+const { checkFunctions } = require("./health/checkFunctions");
+
+exports.checkDatabase = checkDatabase;
+exports.checkFunctions = checkFunctions;
