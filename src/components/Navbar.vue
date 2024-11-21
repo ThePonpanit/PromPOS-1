@@ -43,22 +43,4 @@ const menuItems = ref([
 ]);
 </script>
 
-<style scoped>
-.p-menubar {
-  background-color: var(--menubar-background-color) !important;
-  color: var(--text-color) !important;
-}
-
-.p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link {
-  color: var(--text-color) !important;
-}
-
-.p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link:hover {
-  background-color: var(--surface-100) !important;
-}
-
-Menubar {
-  background-color: var(--menubar-background-color) !important;
-  color: red !important;
-}
-</style>
+<style scoped></style>

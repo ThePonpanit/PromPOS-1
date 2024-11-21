@@ -3,8 +3,9 @@
     <!-- Menu Section -->
     <div class="menu-list">
       <MenuList />
+      <Divider layout="vertical" />
     </div>
-
+    <div></div>
     <!-- Summary Section -->
     <div class="summary">
       <Summary />
@@ -24,20 +25,22 @@ import Summary from "./Summary.vue";
   height: 80vh; /* Full viewport height */
   width: 97vw; /* Full viewport width */
   overflow: hidden; /* Prevent scroll if content overflows */
+  border-radius: 8px;
 }
 
 /* Menu section (70% width) */
 .menu-list {
-  flex: 7.5; /* 70% of the width */
-  background-color: hsla(160, 100%, 37%, 0.1); /* Optional: background color */
+  display: flex;
+  flex: 7.5;
+  background-color: var(--surface-0); /* Optional: background color */
   padding: 20px;
   overflow-y: auto; /* Scrollable if content exceeds */
 }
 
 /* Summary section (30% width) */
 .summary {
-  flex: 2.5; /* 30% of the width */
-  background-color: white; /* Optional: background color */
+  flex: 2.5;
+  background-color: var(--surface-0); /* Optional: background color */
   padding: 20px;
   overflow-y: auto; /* Scrollable if content exceeds */
 }

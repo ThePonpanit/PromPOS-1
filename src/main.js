@@ -44,6 +44,8 @@ import "./global.css";
 // Import PrimeVue Components
 import Button from "primevue/button";
 import Menubar from "primevue/menubar";
+import Card from "primevue/card";
+import { Divider } from "primevue";
 
 // import Firebase
 import "./firebase/init.js";
@@ -65,6 +67,8 @@ app.use(PrimeVue, {
 // Register PrimeVue Components
 app.component("Button", Button);
 app.component("Menubar", Menubar);
+app.component("Card", Card);
+app.component("Divider", Divider);
 
 app.use(createPinia());
 app.use(router);

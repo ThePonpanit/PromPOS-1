@@ -1,14 +1,20 @@
 <template>
-  <div class="summary">
-    <h2>Summary</h2>
-    <ul>
-      <li v-for="item in selectedItems" :key="item.id">
-        {{ item.name }} - ${{ item.price }}
-      </li>
-    </ul>
-    <p>Total: ${{ total }}</p>
-    <Button @click="checkout">Checkout</Button>
-  </div>
+  <Card class="summary-card">
+    <template #header>
+      <h1>Summary</h1>
+    </template>
+    <template #content>
+      <ul>
+        <li v-for="item in selectedItems" :key="item.id">
+          {{ item.name }} - ${{ item.price }}
+        </li>
+      </ul>
+      <p>Total: ${{ total }}</p>
+    </template>
+    <template #footer>
+      <Button @click="checkout">Checkout</Button>
+    </template>
+  </Card>
 </template>
 
 <script setup>
@@ -29,12 +35,19 @@ function checkout() {
 </script>
 
 <style scoped>
-.summary {
-  padding: 20px;
+.summary-card {
   border-radius: 8px;
-  border: 1px solid #ddd;
-  color: black;
-  height: 100%;
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  background-color: var(--surface-0);
+  padding-left: 10px;
+}
+
+.summary {
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  background-color: var(--surface-0);
 }
 
 .summary h2 {
@@ -53,5 +66,14 @@ function checkout() {
 .summary p {
   font-weight: bold;
   margin: 10px 0;
+}
+
+/* add styles for the template #header */
+.summary-card h1 {
+  text-align: center;
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  margin-top: 1vh;
 }
 </style>
