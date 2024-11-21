@@ -44,23 +44,21 @@ const menuItems = ref([
 </script>
 
 <style scoped>
-nav {
-  margin-bottom: 1rem;
-}
-
-/* Styling for Menubar */
 .p-menubar {
-  background-color: hsla(160, 100%, 37%, 0.1);
-  border-radius: 5px;
+  background-color: var(--menubar-background-color) !important;
+  color: var(--text-color) !important;
 }
 
-.p-menubar .p-menuitem-link {
-  color: hsla(160, 100%, 37%, 1);
-  font-weight: bold;
-  transition: color 0.3s;
+.p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link {
+  color: var(--text-color) !important;
 }
 
-.p-menubar .p-menuitem-link:hover {
-  color: hsla(160, 100%, 47%, 1);
+.p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link:hover {
+  background-color: var(--surface-100) !important;
+}
+
+Menubar {
+  background-color: var(--menubar-background-color) !important;
+  color: red !important;
 }
 </style>

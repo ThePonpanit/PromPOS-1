@@ -1,12 +1,45 @@
-import "./global.css";
-
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 
 // PrimeVue
 import PrimeVue from "primevue/config";
 import "primeicons/primeicons.css";
+import { definePreset } from "@primevue/themes";
 import Aura from "@primevue/themes/aura";
+
+// Custom Theme
+const customTheme = definePreset(Aura, {
+  components: {
+    menubar: {
+      colorScheme: {
+        light: {
+          root: {
+            background: "{surface.0}", // Use the light theme's surface color
+            color: "{text.color}", // Use the light theme's text color
+          },
+          item: {
+            color: "{text.color}",
+            hoverBackground: "{surface.100}",
+            hoverColor: "{text.color}",
+          },
+        },
+        dark: {
+          root: {
+            background: "{surface.900}", // Use the dark theme's surface color
+            color: "{text.color}", // Use the dark theme's text color
+          },
+          item: {
+            color: "{text.color}",
+            hoverBackground: "{surface.800}",
+            hoverColor: "{text.color}",
+          },
+        },
+      },
+    },
+  },
+});
+
+import "./global.css";
 
 // Import PrimeVue Components
 import Button from "primevue/button";
@@ -22,7 +55,10 @@ const app = createApp(App);
 
 app.use(PrimeVue, {
   theme: {
-    preset: Aura,
+    preset: customTheme,
+    options: {
+      darkModeSelector: '[data-theme="dark"]',
+    },
   },
 });
 

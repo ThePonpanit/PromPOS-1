@@ -32,8 +32,8 @@ import Navbar from "./components/Navbar.vue";
 /* Sticky Header */
 header {
   flex-shrink: 0;
-  background-color: hsla(160, 100%, 37%, 0.1);
-  padding: 5px;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
   text-align: center;
 }
 
@@ -43,7 +43,6 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px;
 }
 
 /* Sticky Footer */
@@ -51,6 +50,7 @@ footer {
   flex-shrink: 0;
   background-color: hsla(160, 100%, 37%, 0.1);
   text-align: center;
+  margin-top: 1vh;
   padding: 10px;
 }
 
