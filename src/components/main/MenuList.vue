@@ -21,104 +21,104 @@
 <script setup>
 import { ref } from "vue";
 
-// Default image path is src\assets\default-image.jpg
+import defaultImage from "@/assets/default-image.jpg";
 
 const menuItems = ref([
   {
     id: 1,
     name: "Item 1",
     price: 10,
-    image: "src/assets/default-image.jpg",
+    image: defaultImage,
   },
   {
     id: 2,
     name: "Item 2",
     price: 15,
-    image: "src/assets/default-image.jpg",
+    image: defaultImage,
   },
   {
     id: 3,
     name: "Item 3",
     price: 20,
-    image: "src/assets/default-image.jpg",
+    image: defaultImage,
   },
   {
     id: 4,
     name: "Item 4",
     price: 25,
-    image: "src/assets/default-image.jpg",
+    image: defaultImage,
   },
   {
     id: 5,
     name: "Item 5",
     price: 30,
-    image: "src/assets/default-image.jpg",
+    image: defaultImage,
   },
   {
     id: 5,
     name: "Item 5",
     price: 30,
-    image: "src/assets/default-image.jpg",
+    image: defaultImage,
   },
   {
     id: 5,
     name: "Item 5",
     price: 30,
-    image: "src/assets/default-image.jpg",
+    image: defaultImage,
   },
   {
     id: 5,
     name: "Item 5",
     price: 30,
-    image: "src/assets/default-image.jpg",
+    image: defaultImage,
   },
   {
     id: 5,
     name: "Item 5",
     price: 30,
-    image: "src/assets/default-image.jpg",
+    image: defaultImage,
   },
   {
     id: 5,
     name: "Item 5",
     price: 30,
-    image: "src/assets/default-image.jpg",
+    image: defaultImage,
   },
   {
     id: 5,
     name: "Item 5",
     price: 30,
-    image: "src/assets/default-image.jpg",
+    image: defaultImage,
   },
   {
     id: 5,
     name: "Item 5",
     price: 30,
-    image: "src/assets/default-image.jpg",
+    image: defaultImage,
   },
   {
     id: 5,
     name: "Item 5",
     price: 30,
-    image: "src/assets/default-image.jpg",
+    image: defaultImage,
   },
   {
     id: 5,
     name: "Item 5",
     price: 30,
-    image: "src/assets/default-image.jpg",
+    image: defaultImage,
   },
   {
     id: 5,
     name: "Item 5",
     price: 30,
-    image: "src/assets/default-image.jpg",
+    image: defaultImage,
   },
   {
     id: 5,
     name: "Item 5",
     price: 30,
-    image: "src/assets/default-image.jpg",
+    image: defaultImage,
   },
 ]);
 

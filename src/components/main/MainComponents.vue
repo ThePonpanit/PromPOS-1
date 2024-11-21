@@ -43,5 +43,6 @@ import Summary from "./Summary.vue";
   background-color: var(--surface-0); /* Optional: background color */
   padding: 20px;
   overflow-y: auto; /* Scrollable if content exceeds */
+  margin-left: -2vw;
 }
 </style>
