@@ -35,6 +35,7 @@ function checkout() {
   border-radius: 8px;
   border: 1px solid #ddd;
   color: black;
+  height: 100%;
 }
 
 .summary h2 {

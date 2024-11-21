@@ -28,6 +28,7 @@ function selectItem(item) {
   background-color: hsla(160, 100%, 37%, 0.1);
   padding: 20px;
   border-radius: 8px;
+  height: 100%;
 }
 
 .menu-list h2 {

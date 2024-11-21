@@ -6,6 +6,7 @@
         <RouterLink to="/">Home</RouterLink> |
         <RouterLink to="/about">About</RouterLink> |
         <RouterLink to="/firestore-health-check">Health Check</RouterLink>
+        <ThemeSwitcher />
       </nav>
     </header>
 
@@ -23,6 +24,7 @@
 
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
+import ThemeSwitcher from "./components/ThemeSwitcher.vue";
 </script>
 
 <style scoped>
@@ -30,7 +32,6 @@ import { RouterLink, RouterView } from "vue-router";
 #app {
   display: flex;
   flex-direction: column;
-  height: 100vh; /* Full viewport height */
 }
 
 /* Sticky Header */
@@ -59,7 +60,9 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 10px;
+  height: 95vh; /* Full viewport height */
+  width: 96vw; /* Full viewport width */
 }
 
 /* Sticky Footer */

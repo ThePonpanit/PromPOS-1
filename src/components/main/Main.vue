@@ -21,23 +21,22 @@ import Summary from "./Summary.vue";
 /* Parent container layout */
 .layout {
   display: flex;
-  height: 95vh; /* Full viewport height */
+  height: 80vh; /* Full viewport height */
   width: 95vw; /* Full viewport width */
   overflow: hidden; /* Prevent scroll if content overflows */
 }
 
 /* Menu section (70% width) */
 .menu-list {
-  flex: 7; /* 70% of the width */
+  flex: 7.5; /* 70% of the width */
   background-color: hsla(160, 100%, 37%, 0.1); /* Optional: background color */
   padding: 20px;
   overflow-y: auto; /* Scrollable if content exceeds */
-  border-right: 1px solid #ddd;
 }
 
 /* Summary section (30% width) */
 .summary {
-  flex: 3; /* 30% of the width */
+  flex: 2.5; /* 30% of the width */
   background-color: white; /* Optional: background color */
   padding: 20px;
   overflow-y: auto; /* Scrollable if content exceeds */
