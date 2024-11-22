@@ -64,7 +64,7 @@ async function syncOrders() {
   }
 
   const pendingOrders = menuStore.orders.filter(
-    (order) => order.status === "pending"
+    (order) => order.status !== "sent"
   );
 
   for (const order of pendingOrders) {

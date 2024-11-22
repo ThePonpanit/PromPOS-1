@@ -2,6 +2,9 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import defaultImage from "@/assets/default-image.jpg";
+// Import Firebase Firestore
+import { db } from "@/firebase/init.js";
+import { collection, addDoc } from "firebase/firestore";
 
 export const useMenuStore = defineStore(
   "menuStore",
@@ -73,7 +76,7 @@ export const useMenuStore = defineStore(
     }
 
     // Checkout action
-    function checkout() {
+    async function checkout() {
       if (selectedItems.value.length === 0) return;
 
       // Generate unique order ID
@@ -82,9 +85,9 @@ export const useMenuStore = defineStore(
       const uid = generateId();
 
       const order = {
-        id: uid, // Use timestamp as a simple unique ID
+        id: uid,
         total: total.value,
-        status: "pending", // Order status: 'pending', 'sent', 'failed'
+        status: "pending", // Initially pending
         timestampUTC7: new Date().toLocaleString("en-US", {
           timeZone: "Asia/Bangkok",
         }),
@@ -94,6 +97,20 @@ export const useMenuStore = defineStore(
 
       orders.value.push(order);
       selectedItems.value = []; // Clear cart after checkout
+
+      // Attempt to send order to Firestore immediately
+      try {
+        // Send order to Firestore
+        await addDoc(collection(db, "orders"), {
+          ...order,
+          status: "sent", // Update status to sent
+        });
+        // Update order status in the store
+        updateOrderStatus(order.id, "sent");
+      } catch (error) {
+        console.error("Error sending order:", error);
+        // Order status remains 'pending', so the interval sync can retry
+      }
     }
 
     // Update order status
