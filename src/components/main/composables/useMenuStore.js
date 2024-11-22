@@ -75,6 +75,11 @@ const totalItems = computed(() =>
   selectedItems.value.reduce((sum, item) => sum + item.quantity, 0)
 );
 
+// Remove all items
+function removeAllItems() {
+  selectedItems.value = [];
+}
+
 export function useMenuStore() {
   return {
     menuItems,
@@ -85,5 +90,6 @@ export function useMenuStore() {
     removeItemCompletely,
     total,
     totalItems,
+    removeAllItems,
   };
 }

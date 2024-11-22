@@ -5,12 +5,25 @@
     </template>
 
     <template #content>
+      <!-- Summary List -->
       <DataTable
         :value="selectedItemsWithTotal"
         responsiveLayout="scroll"
         stripedRows
+        scrollable
+        scrollHeight="55vh"
         style="overflow-y: auto; height: 55vh"
       >
+        <template #empty>
+          <tr
+            style="display: flex; justify-content: center; align-items: center"
+          >
+            <td colspan="5" style="text-align: center; color: gray">
+              🚫 No items to display. Add some items to your cart! 🛒
+            </td>
+          </tr>
+        </template>
+
         <Column
           field="name"
           header="Item Name"
@@ -42,8 +55,27 @@
 
       <!-- Footer Summary -->
       <div class="summary-footer">
-        <p>Total Items: {{ totalItems }}</p>
-        <p>Total Amount: {{ valueNumberFormat(total) }}</p>
+        <Button
+          @click="removeAllItems"
+          severity="danger"
+          rounded
+          outlined
+          style="margin-left: -1rem"
+        >
+          <span class="material-icons">remove_shopping_cart</span>
+          <span>Empty Cart</span>
+        </Button>
+        <div style="display: flex">
+          <div class="summary-item">
+            <p class="summary-label">Total Items</p>
+            <p class="summary-value-total-items">{{ totalItems }}</p>
+          </div>
+          <Divider layout="vertical" style="margin-left: 2rem" />
+          <div class="summary-item">
+            <p class="summary-label">Total Amount</p>
+            <p class="summary-value">{{ valueNumberFormat(total) }}</p>
+          </div>
+        </div>
       </div>
     </template>
   </Card>
@@ -53,8 +85,13 @@
 import { useMenuStore } from "./composables/useMenuStore.js";
 import { valueNumberFormatter } from "./utils/valueNumberFormatter.js";
 
-const { selectedItemsWithTotal, removeItem, total, totalItems } =
-  useMenuStore();
+const {
+  selectedItemsWithTotal,
+  removeItem,
+  total,
+  totalItems,
+  removeAllItems,
+} = useMenuStore();
 
 // Direct usage of the valueNumberFormatter function
 const valueNumberFormat = valueNumberFormatter;
@@ -101,5 +138,48 @@ const valueNumberFormat = valueNumberFormatter;
   font-size: 1.5rem;
   color: var(--primary-color);
   margin-top: 1vh;
+}
+
+.summary-footer {
+  font-family: "Roboto Mono", monospace;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.summary-item {
+  display: flex;
+  flex-wrap: wrap; /* Allow content to wrap */
+  align-items: flex-start;
+}
+
+.summary-label {
+  margin: 0;
+  font-weight: bold;
+  white-space: nowrap; /* Prevent label from wrapping */
+  width: 100%;
+  text-align: right;
+}
+
+.summary-value {
+  margin: 0;
+  flex-basis: 100%; /* Value takes full width when wrapping */
+  word-break: break-word; /* Allow long numbers to wrap */
+  text-align: right;
+  width: 1rem;
+}
+
+.total-amount {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.summary-value-total-items {
+  margin: 0;
+  flex-basis: 100%;
+  word-break: break-word;
+  text-align: right;
+  width: 1rem;
 }
 </style>
