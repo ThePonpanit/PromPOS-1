@@ -47,9 +47,4 @@ const menuItems = ref([
 .main-navbar {
   border-radius: 15px;
 }
-
-nav {
-  padding-left: 1vw;
-  padding-right: 1vw;
-}
 </style>

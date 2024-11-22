@@ -55,7 +55,7 @@ footer {
   margin-top: 1vh;
   margin-bottom: 0.5vh;
   padding: 10px;
-  width: 98vw;
+  width: 100%;
 
   background-color: var(--surface-light-0);
   border-radius: 10px;

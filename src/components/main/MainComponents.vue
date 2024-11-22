@@ -5,7 +5,6 @@
       <MenuList />
       <Divider layout="vertical" />
     </div>
-    <div></div>
     <!-- Summary Section -->
     <div class="summary">
       <Summary />
@@ -23,7 +22,6 @@ import Summary from "./Summary.vue";
 .layout {
   display: flex;
   height: 85vh; /* Full viewport height */
-  width: 98vw; /* Full viewport width */
   overflow: hidden; /* Prevent scroll if content overflows */
   border-radius: 15px;
 
@@ -47,5 +45,7 @@ import Summary from "./Summary.vue";
   padding: 20px;
   overflow-y: auto; /* Scrollable if content exceeds */
   margin-left: -2vw;
+  min-width: fit-content;
+  text-wrap: none;
 }
 </style>
