@@ -29,15 +29,18 @@
   --surface-300: #e0e0e0;
   --surface-400: #d3d3d3;
   --surface-500: #c0c0c0;
+
+  --surface-light-0: #ffffff;
+
   --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  --border-color: #e0e0e0;
 
   --input-background-color: #213547;
   --divider-opacity: 0.3;
   --shadow-color: rgba(0, 0, 0, 0.2);
 
   /* Color for border line and BG */
-  --border-color: #a6aebf;
+  --border-color: rgb(225, 232, 240);
+  --card-border-color: #a6aebf;
   --border-background-color: #e4e0e1;
 }
 
@@ -53,8 +56,10 @@
   --surface-300: #3d3d3d;
   --surface-400: #4a4a4a;
   --surface-500: #5a5a5a;
+
+  --surface-light-0: rgb(25, 25, 28);
+
   --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  --border-color: #333333;
 
   --input-background-color: #45627c;
   --divider-opacity: 1;
@@ -62,7 +67,8 @@
   --shadow-color: rgba(255, 255, 255, 0.2);
 
   /* Color for border line and BG */
-  --border-color: #a6aebf;
+  --border-color: rgb(62, 62, 69);
+  --card-border-color: #a6aebf;
   --border-background-color: #5a5a5a;
 }
 
@@ -102,7 +108,12 @@ html,
 }
 
 #app {
-  padding: 0.75rem;
+  padding: 0;
   display: flex;
   justify-content: center;
+}
+
+button:active {
+  scale: 0.95;
+  transition: all 0.1s ease;
 }

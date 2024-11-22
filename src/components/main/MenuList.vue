@@ -152,7 +152,7 @@ function selectItem(item) {
 
 .clickable-card {
   cursor: pointer;
-  border: 2px solid var(--border-color);
+  border: 2px solid var(--card-border-color);
   padding: 1px;
 }
 

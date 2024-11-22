@@ -11,15 +11,18 @@
     </main>
 
     <!-- Sticky Footer -->
-    <footer>
-      <p>Footer</p>
-    </footer>
+    <div class="footer-component">
+      <footer>
+        <FooterComponent />
+      </footer>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { RouterView } from "vue-router";
 import Navbar from "./components/Navbar.vue";
+import FooterComponent from "./components/FooterComponent.vue";
 </script>
 
 <style scoped>
@@ -48,15 +51,19 @@ main {
 /* Sticky Footer */
 footer {
   flex-shrink: 0;
-  background-color: hsla(160, 100%, 37%, 0.1);
   text-align: center;
   margin-top: 1vh;
+  margin-bottom: 0.5vh;
   padding: 10px;
+  width: 98vw;
+
+  background-color: var(--surface-light-0);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
 }
 
-footer p {
-  margin: 0;
-  font-size: 0.9rem;
-  color: hsla(160, 100%, 37%, 1);
+.footer-component {
+  display: flex;
+  justify-content: center;
 }
 </style>

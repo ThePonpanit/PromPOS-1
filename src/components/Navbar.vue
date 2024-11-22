@@ -1,6 +1,6 @@
 <template>
   <nav>
-    <Menubar :model="menuItems" end>
+    <Menubar :model="menuItems" end class="main-navbar">
       <template #end>
         <!-- Add the ThemeSwitcher in the right end of the Menubar -->
         <ThemeSwitcher />
@@ -43,4 +43,13 @@ const menuItems = ref([
 ]);
 </script>
 
-<style scoped></style>
+<style scoped>
+.main-navbar {
+  border-radius: 15px;
+}
+
+nav {
+  padding-left: 1vw;
+  padding-right: 1vw;
+}
+</style>

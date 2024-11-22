@@ -2,9 +2,11 @@
 <template>
   <Button
     :icon="themeIcon"
-    class="p-button-rounded p-button-text theme-switcher-button"
+    class="theme-switcher-button"
     @click="toggleTheme"
     :aria-label="themeLabel"
+    rounded
+    outlined
   />
 </template>
 
@@ -43,5 +45,7 @@ onMounted(() => {
 <style scoped>
 .theme-switcher-button {
   color: var(--theme-switch-button-color);
+  border-color: var(--border-color);
+  border-width: 2px;
 }
 </style>
