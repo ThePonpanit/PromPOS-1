@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import OrdersView from "@/views/OrdersView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,6 +22,11 @@ const router = createRouter({
       path: "/firestore-health-check",
       name: "firestore-health-check",
       component: () => import("../views/FirestoreHealthCheckView.vue"),
+    },
+    {
+      path: "/orders",
+      name: "orders",
+      component: OrdersView,
     },
   ],
 });

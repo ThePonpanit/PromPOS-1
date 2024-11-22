@@ -42,6 +42,10 @@
   --border-color: rgb(225, 232, 240);
   --card-border-color: #a6aebf;
   --border-background-color: #e4e0e1;
+
+  /* Nav selected BG-color */
+  --nav-selected-bg-color: #f5f7f8;
+  --nav-selected-color: #646cff;
 }
 
 /* Dark Theme */
@@ -70,6 +74,10 @@
   --border-color: rgb(62, 62, 69);
   --card-border-color: #a6aebf;
   --border-background-color: #5a5a5a;
+
+  /* Nav selected BG-color */
+  --nav-selected-bg-color: #333333;
+  --nav-selected-color: #9aafff;
 }
 
 /* Apply Colors */

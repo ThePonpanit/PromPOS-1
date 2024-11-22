@@ -1,6 +1,6 @@
 <template>
   <nav>
-    <Menubar :model="menuItems" end class="main-navbar">
+    <Menubar :model="menuItems" class="main-navbar">
       <template #end>
         <!-- Add the ThemeSwitcher in the right end of the Menubar -->
         <div
@@ -20,42 +20,74 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import Menubar from "primevue/menubar"; // Import PrimeVue Menubar
-import ThemeSwitcher from "./ThemeSwitcher.vue"; // Import ThemeSwitcher
+import { computed } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import Menubar from "primevue/menubar";
+import ThemeSwitcher from "./ThemeSwitcher.vue";
 import OrderSync from "./OrderSync.vue";
 
+const router = useRouter();
+const currentRoute = useRoute();
+
 // Define menu items for the Menubar
-const menuItems = ref([
+const menuItems = computed(() => [
   {
     label: "Home",
     icon: "pi pi-home",
     command: () => {
-      // Navigate to home
-      window.location.href = "/";
+      if (currentRoute.path !== "/") {
+        router.push("/");
+      }
     },
+    class: currentRoute.path === "/" ? "nav-active-menu" : "",
   },
   {
     label: "About",
     icon: "pi pi-info-circle",
     command: () => {
-      // Navigate to about
-      window.location.href = "/about";
+      if (currentRoute.path !== "/about") {
+        router.push("/about");
+      }
     },
+    class: currentRoute.path === "/about" ? "nav-active-menu" : "",
   },
   {
     label: "Health Check",
     icon: "pi pi-heart",
     command: () => {
-      // Navigate to Health Check
-      window.location.href = "/firestore-health-check";
+      if (currentRoute.path !== "/firestore-health-check") {
+        router.push("/firestore-health-check");
+      }
     },
+    class:
+      currentRoute.path === "/firestore-health-check" ? "nav-active-menu" : "",
+  },
+  {
+    label: "Orders",
+    icon: "pi pi-shopping-cart",
+    command: () => {
+      if (currentRoute.path !== "/orders") {
+        router.push("/orders");
+      }
+    },
+    class: currentRoute.path === "/orders" ? "nav-active-menu" : "",
   },
 ]);
 </script>
 
-<style scoped>
+<style>
 .main-navbar {
   border-radius: 15px;
+}
+
+.nav-active-menu {
+  font-weight: bold; /* Optional: Make the active item bold */
+  pointer-events: none; /* Prevent clicking the active menu */
+  cursor: default; /* Indicate it's not clickable */
+  background-color: var(
+    --nav-selected-bg-color
+  ); /* Highlight the active menu */
+  border-radius: 10px; /* Optional: Round the corners */
+  border: 2px solid var(--nav-selected-color); /* Optional: Add a border */
 }
 </style>
