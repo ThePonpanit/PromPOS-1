@@ -24,20 +24,33 @@
           </tr>
         </template>
         <Column field="id" header="Order ID"></Column>
-        <Column field="status" header="Data Status"></Column>
+        <Column header="Data Status">
+          <!-- make the field="status" to uppercase , only the first letter is Uppercase-->
+          <template #body="storedData">
+            {{
+              storedData.data.status.charAt(0).toUpperCase() +
+              storedData.data.status.slice(1)
+            }}
+          </template>
+        </Column>
         <Column header="Grand Total">
-          <template #body="storedData">฿ {{ storedData.total }}</template>
+          <template #body="storedData">฿ {{ storedData.data.total }}</template>
         </Column>
         <Column field="timestampUTC7" header="Timestamp"></Column>
-        <Column field="orderStatus" header="Order Status"></Column>
+        <Column header="Order Status">
+          <!-- Make the orderStatus tp the uppercase -->
+          <template #body="storedData">
+            {{ getCurrentStatusLabel(storedData.data.orderStatus) }}
+          </template>
+        </Column>
         <!-- Action Column -->
         <Column header="Action">
           <template #body="storedData">
             <Button
-              label="Edit"
               icon="pi pi-pencil"
               class="p-button-rounded p-button-info"
               @click="openDialog(storedData)"
+              outlined
             />
           </template>
         </Column>
@@ -46,40 +59,104 @@
       <!-- Dialog -->
       <template>
         <Dialog
-          header="Edit Order Status"
+          header="Order Details"
           v-model:visible="isDialogVisible"
           :modal="true"
           :closable="true"
           :draggable="false"
+          class="order-dialog"
         >
-          <form @submit.prevent="updateOrderStatus">
-            <p>
-              Order ID: <b>{{ selectedOrder?.id || "N/A" }}</b>
-            </p>
-            <p>
-              Current Status:
-              <b>{{
-                getCurrentStatusLabel(selectedOrder?.orderStatus) || "N/A"
-              }}</b>
-            </p>
-            <label for="orderStatus">New Status:</label>
-            <Select
-              id="orderStatus"
-              v-model="selectedStatus"
-              :options="statusOptions"
-              optionLabel="label"
-              placeholder="Select a Status"
-              class="w-full"
-            />
-            <div style="text-align: right; margin-top: 1rem">
-              <Button label="Save" type="submit" class="p-button-success" />
-              <Button
-                label="Cancel"
-                class="p-button-secondary"
-                @click="isDialogVisible = false"
-              />
+          <div class="dialog-content">
+            <!-- Order Information -->
+            <div class="order-info">
+              <p><strong>Order ID:</strong> {{ selectedOrder?.id || "N/A" }}</p>
+              <p>
+                <strong>Timestamp:</strong>
+                {{ selectedOrder?.timestampUTC7 || "N/A" }}
+              </p>
+              <p>
+                <strong>Current Order Status:</strong>
+                <span
+                  :class="{
+                    'status-underline-cancelled':
+                      selectedOrder?.orderStatus === 'cancelled',
+                    'status-underline-success':
+                      selectedOrder?.orderStatus === 'success',
+                  }"
+                  class="status-underline"
+                >
+                  {{
+                    getCurrentStatusLabel(selectedOrder?.orderStatus) || "N/A"
+                  }}
+                </span>
+              </p>
+
+              <p>
+                <strong>Grand Total:</strong>
+                <span class="grand-total"
+                  >฿ {{ selectedOrder?.total || "N/A" }}</span
+                >
+              </p>
             </div>
-          </form>
+            <Divider />
+            <!-- Order Items -->
+            <div class="order-items">
+              <h4>Items:</h4>
+              <ul>
+                <li
+                  v-for="item in selectedOrder?.items || []"
+                  :key="item.id"
+                  class="item"
+                >
+                  <span>
+                    <span style="font-weight: bold">
+                      {{ item.quantity }}
+                    </span>
+                    x {{ item.name }}</span
+                  >
+                  <span class="item-price">฿{{ item.price }}</span>
+                </li>
+              </ul>
+            </div>
+            <div style="text-align: right">
+              <span>
+                Total Items:
+
+                <span style="font-weight: 700">
+                  {{ selectedOrder?.items?.length || 0 }}
+                </span>
+              </span>
+            </div>
+            <Divider />
+            <!-- Editable Status -->
+            <form @submit.prevent="updateOrderStatus" class="edit-status-form">
+              <label for="orderStatus"
+                ><strong>Update Order Status:</strong></label
+              >
+              <Select
+                id="orderStatus"
+                v-model="selectedStatus"
+                :options="statusOptions"
+                optionLabel="label"
+                placeholder="Select a Status"
+                class="w-full status-select"
+              />
+              <div class="dialog-buttons">
+                <Button
+                  label="Cancel"
+                  class="p-button-secondary cancel-button"
+                  @click="isDialogVisible = false"
+                  text
+                  severity="danger"
+                />
+                <Button
+                  label="Save"
+                  type="submit"
+                  class="p-button-success save-button"
+                />
+              </div>
+            </form>
+          </div>
         </Dialog>
       </template>
     </template>
@@ -96,15 +173,14 @@ const selectedStatus = ref(null); // Holds the currently selected status in the 
 
 // Options for the PrimeVue Select
 const statusOptions = ref([
-  { label: "Pending", value: "pending" },
-  { label: "Processing", value: "processing" },
-  { label: "Completed", value: "completed" },
   { label: "Cancelled", value: "cancelled" },
+  { label: "Success", value: "success" }, // Add this line
 ]);
 
 // Load orders from localStorage
 onMounted(() => {
   const storedData = localStorage.getItem("menuStore");
+  console.log("Stored Data:", storedData); // Debugging log
   if (storedData) {
     const localData = JSON.parse(storedData);
     if (localData.orders) {
@@ -166,5 +242,97 @@ form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.dialog-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1rem;
+}
+
+/* Base style for underline */
+.status-underline {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  margin-left: 1rem;
+}
+
+/* Red underline for "Cancelled" */
+.status-underline-cancelled {
+  text-decoration-color: #f44336; /* Red underline */
+}
+
+/* Green underline for "Success" */
+.status-underline-success {
+  text-decoration-color: #4caf50; /* Green underline */
+}
+</style>
+
+<style>
+.order-dialog {
+  text-wrap: nowrap;
+  min-width: 350px;
+}
+
+.dialog-content {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.order-info p {
+  margin: 0.5rem 0;
+}
+
+.order-info .grand-total {
+  margin-left: 1rem;
+  font-weight: bold;
+  color: #4caf50; /* Highlight the grand total in green */
+}
+
+.order-items {
+  margin: 1rem 0;
+}
+
+.order-items h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.order-items ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.order-items .item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.order-items .item-price {
+  font-weight: bold;
+  color: #4caf50; /* Match the grand total color */
+}
+
+.edit-status-form {
+  margin-top: 1.5rem;
+}
+
+.dialog-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.save-button {
+  background-color: #4caf50;
+  border-color: #4caf50;
+}
+
+.cancel-button {
+  background-color: #e0e0e0;
+  color: #333;
 }
 </style>
