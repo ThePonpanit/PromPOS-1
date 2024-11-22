@@ -4,7 +4,7 @@ import { ref, computed } from "vue";
 import defaultImage from "@/assets/default-image.jpg";
 // Import Firebase Firestore
 import { db } from "@/firebase/init.js";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, doc, setDoc, getDoc } from "firebase/firestore";
 
 export const useMenuStore = defineStore(
   "menuStore",
@@ -79,13 +79,16 @@ export const useMenuStore = defineStore(
     async function checkout() {
       if (selectedItems.value.length === 0) return;
 
-      // Generate unique order ID
+      // **Define your shop ID**
       const shopId = "shop123"; // Replace with your unique shop ID
-      const generateId = () => `${shopId}-${Date.now()}`;
-      const uid = generateId();
+      const shopName = "Your Shop Name"; // Replace with your shop name
+
+      // Generate unique order ID
+      const generateOrderId = () => `order-${Date.now()}`;
+      const orderId = generateOrderId();
 
       const order = {
-        id: uid,
+        id: orderId,
         total: total.value,
         status: "pending", // Initially pending
         timestampUTC7: new Date().toLocaleString("en-US", {
@@ -100,13 +103,37 @@ export const useMenuStore = defineStore(
 
       // Attempt to send order to Firestore immediately
       try {
-        // Send order to Firestore
-        await addDoc(collection(db, "orders"), {
+        // **Create a reference to the shop document**
+        const shopDocRef = doc(db, "orders", shopId);
+
+        // **Ensure the shop document exists**
+        const shopDocSnap = await getDoc(shopDocRef);
+        if (!shopDocSnap.exists()) {
+          // If the shop document doesn't exist, create it with general data
+          await setDoc(shopDocRef, {
+            shopId: shopId,
+            shopName: shopName, // Add other general shop data here
+            createdAt: new Date().toLocaleString("en-US", {
+              timeZone: "Asia/Bangkok",
+            }),
+          });
+        }
+
+        // **Create a reference to the order document in the shopOrders subcollection**
+        const orderRef = doc(
+          collection(db, "orders", shopId, "shopOrders"),
+          order.id
+        );
+
+        // Send order to Firestore with specified document ID
+        await setDoc(orderRef, {
           ...order,
           status: "sent", // Update status to sent
         });
+
         // Update order status in the store
         updateOrderStatus(order.id, "sent");
+        console.log(`Order ${order.id} sent successfully.`);
       } catch (error) {
         console.error("Error sending order:", error);
         // Order status remains 'pending', so the interval sync can retry
