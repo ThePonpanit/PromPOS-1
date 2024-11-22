@@ -1,4 +1,39 @@
-<template></template>
+<template>
+  <!-- show color dot status for the is online -->
+  <div class="network-status">
+    <p v-if="isOnline" style="color: green">
+      <span class="material-icons dot">wifi</span>
+      Online
+    </p>
+    <p v-else style="color: red">
+      <span class="material-icons dot">wifi_off</span>
+      Offline
+    </p>
+  </div>
+</template>
+
+<style scoped>
+.dot {
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.network-status {
+  border: 1px solid var(--border-color);
+  /* Set border color to the net work Status */
+
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.network-status p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+</style>
+
 <script setup>
 import { useMenuStore } from "@/stores/useMenuStore";
 import { onMounted, onUnmounted } from "vue";

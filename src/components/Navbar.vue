@@ -3,7 +3,17 @@
     <Menubar :model="menuItems" end class="main-navbar">
       <template #end>
         <!-- Add the ThemeSwitcher in the right end of the Menubar -->
-        <ThemeSwitcher />
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+          "
+        >
+          <OrderSync />
+          <ThemeSwitcher />
+        </div>
       </template>
     </Menubar>
   </nav>
@@ -13,6 +23,7 @@
 import { ref } from "vue";
 import Menubar from "primevue/menubar"; // Import PrimeVue Menubar
 import ThemeSwitcher from "./ThemeSwitcher.vue"; // Import ThemeSwitcher
+import OrderSync from "./OrderSync.vue";
 
 // Define menu items for the Menubar
 const menuItems = ref([

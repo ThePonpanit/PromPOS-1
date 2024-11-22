@@ -1,5 +1,4 @@
 <template>
-  <OrderSync />
   <div id="app">
     <!-- Sticky Header -->
     <header>
@@ -24,7 +23,6 @@
 import { RouterView } from "vue-router";
 import Navbar from "./components/Navbar.vue";
 import FooterComponent from "./components/FooterComponent.vue";
-import OrderSync from "./components/OrderSync.vue";
 </script>
 
 <style scoped>
