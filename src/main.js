@@ -1,5 +1,6 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
 // PrimeVue
 import PrimeVue from "primevue/config";
@@ -78,7 +79,13 @@ app.component("Column", Column);
 app.component("ColumnGroup", ColumnGroup);
 app.component("Row", Row);
 
-app.use(createPinia());
+// Pinia
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
+app.use(pinia);
+
+// Router
 app.use(router);
 
+// Mount the app
 app.mount("#app");

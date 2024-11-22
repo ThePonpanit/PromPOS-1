@@ -1,19 +1,18 @@
 <template>
-  <Button @click="checkout" rounded :disabled="totalItems === 0">
-    <span class="material-icons"> shopping_cart_checkout</span>
+  <Button
+    @click="menuStore.checkout"
+    rounded
+    :disabled="menuStore.totalItems === 0"
+  >
+    <span class="material-icons">shopping_cart_checkout</span>
     <span>Checkout</span>
   </Button>
 </template>
 
 <script setup>
-import { useMenuStore } from "./composables/useMenuStore.js";
+import { useMenuStore } from "@/stores/useMenuStore";
 
-const { selectedItems, totalItems } = useMenuStore();
-
-function checkout() {
-  console.log("Checkout with items:", selectedItems);
-  // Add your checkout logic here
-}
+const menuStore = useMenuStore();
 </script>
 
 <style scoped>

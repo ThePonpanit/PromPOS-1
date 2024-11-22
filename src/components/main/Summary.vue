@@ -7,7 +7,7 @@
     <template #content>
       <!-- Summary List -->
       <DataTable
-        :value="selectedItemsWithTotal"
+        :value="menuStore.selectedItemsWithTotal"
         responsiveLayout="scroll"
         stripedRows
         scrollable
@@ -44,7 +44,7 @@
           <template #body="slotProps">
             <Button
               icon="pi pi-minus"
-              @click="removeItem(slotProps.data.id)"
+              @click="menuStore.removeItem(slotProps.data.id)"
               severity="danger"
               rounded
               outlined
@@ -56,12 +56,12 @@
       <!-- Footer Summary -->
       <div class="summary-footer">
         <Button
-          @click="removeAllItems"
+          @click="menuStore.removeAllItems"
           severity="danger"
           rounded
           outlined
           style="margin-left: -1rem"
-          :disabled="totalItems === 0"
+          :disabled="menuStore.totalItems === 0"
         >
           <span class="material-icons">remove_shopping_cart</span>
           <span>Empty Cart</span>
@@ -69,13 +69,15 @@
         <div style="display: flex">
           <div class="summary-item">
             <p class="summary-label">Total Items</p>
-            <p class="summary-value-total-items sum-value">{{ totalItems }}</p>
+            <p class="summary-value-total-items sum-value">
+              {{ menuStore.totalItems }}
+            </p>
           </div>
           <Divider layout="vertical" style="margin-left: 2rem" />
           <div class="summary-item">
             <p class="summary-label">Total Amount</p>
             <p class="summary-value sum-value">
-              {{ valueNumberFormat(total) }}
+              {{ valueNumberFormat(menuStore.total) }}
             </p>
           </div>
         </div>
@@ -85,16 +87,10 @@
 </template>
 
 <script setup>
-import { useMenuStore } from "./composables/useMenuStore.js";
+import { useMenuStore } from "@/stores/useMenuStore.js";
 import { valueNumberFormatter } from "./utils/valueNumberFormatter.js";
 
-const {
-  selectedItemsWithTotal,
-  removeItem,
-  total,
-  totalItems,
-  removeAllItems,
-} = useMenuStore();
+const menuStore = useMenuStore();
 
 // Direct usage of the valueNumberFormatter function
 const valueNumberFormat = valueNumberFormatter;

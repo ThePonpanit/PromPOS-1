@@ -3,7 +3,7 @@
     <h2>Menu</h2>
     <div class="menu-items">
       <Card
-        v-for="item in menuItems"
+        v-for="item in menuStore.menuItems"
         :key="item.id"
         class="menu-card clickable-card"
         @click="selectItem(item)"
@@ -12,19 +12,19 @@
           <img :src="item.image" :alt="item.name" class="menu-item-image" />
         </template>
         <template #title>{{ item.name }}</template>
-        <template #subtitle>฿ {{ item.price }}</template>
+        <template #subtitle> ฿ {{ item.price }}</template>
       </Card>
     </div>
   </div>
 </template>
 
 <script setup>
-import { useMenuStore } from "./composables/useMenuStore.js";
+import { useMenuStore } from "@/stores/useMenuStore";
 
-const { menuItems, addItem } = useMenuStore();
+const menuStore = useMenuStore();
 
 function selectItem(item) {
-  addItem(item);
+  menuStore.addItem(item);
 }
 </script>
 
