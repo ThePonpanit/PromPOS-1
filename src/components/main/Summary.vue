@@ -11,8 +11,8 @@
         responsiveLayout="scroll"
         stripedRows
         scrollable
-        scrollHeight="55vh"
-        style="overflow-y: auto; height: 55vh"
+        scrollHeight="50vh"
+        style="overflow-y: auto"
       >
         <template #empty>
           <tr
@@ -61,6 +61,7 @@
           rounded
           outlined
           style="margin-left: -1rem"
+          :disabled="totalItems === 0"
         >
           <span class="material-icons">remove_shopping_cart</span>
           <span>Empty Cart</span>
@@ -113,6 +114,7 @@ const valueNumberFormat = valueNumberFormatter;
   border: 1px solid var(--border-color);
   color: var(--text-color);
   background-color: var(--surface-0);
+  height: 100%;
 }
 
 .summary h2 {
