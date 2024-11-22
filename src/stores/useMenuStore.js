@@ -110,6 +110,7 @@ export const useMenuStore = defineStore(
         }),
         timestamp: new Date().toISOString(),
         items: selectedItems.value.map((item) => ({ ...item })), // Deep copy items
+        orderStatus: "success", // Order status
       };
 
       orders.value.push(order);

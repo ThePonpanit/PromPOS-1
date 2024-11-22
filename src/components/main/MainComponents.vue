@@ -26,13 +26,12 @@ import CheckoutButton from "./CheckoutButton.vue";
 
   /* View port for the Main */
   height: 82vh;
-
+  width: 100%;
   overflow: hidden; /* Prevent scroll if content overflows */
-  border-radius: 15px;
 
   /* add border */
   border: 1px solid var(--border-color);
-  min-width: 95vw;
+  border-radius: 15px;
 }
 
 /* Menu section (70% width) */
