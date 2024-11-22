@@ -22,12 +22,19 @@ button {
 }
 
 button:active {
-  scale: 1 !important;
+  transform: scale(0.95);
   transition: all 0.1s ease;
 }
 
 button:disabled {
   background-color: var(--disabled-color);
   color: var(--disabled-text-color);
+  cursor: not-allowed;
+
+  /* Remove active effect */
+  box-shadow: none;
+  transform: none;
+
+  transform: scale(1) !important;
 }
 </style>

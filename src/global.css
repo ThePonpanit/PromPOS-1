@@ -112,8 +112,3 @@ html,
   display: flex;
   justify-content: center;
 }
-
-button:active {
-  scale: 0.95;
-  transition: all 0.1s ease;
-}
