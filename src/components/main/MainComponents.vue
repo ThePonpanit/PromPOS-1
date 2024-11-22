@@ -8,6 +8,7 @@
     <!-- Summary Section -->
     <div class="summary">
       <Summary />
+      <CheckoutButton />
     </div>
   </div>
 </template>
@@ -15,6 +16,7 @@
 <script setup>
 import MenuList from "./MenuList.vue";
 import Summary from "./Summary.vue";
+import CheckoutButton from "./CheckoutButton.vue";
 </script>
 
 <style scoped>
@@ -27,12 +29,13 @@ import Summary from "./Summary.vue";
 
   /* add border */
   border: 1px solid var(--border-color);
+  min-width: 95vw;
 }
 
 /* Menu section (70% width) */
 .menu-list {
   display: flex;
-  flex: 7.5;
+  flex: 6;
   background-color: var(--surface-light-0); /* Optional: background color */
   padding: 20px;
   overflow-y: auto; /* Scrollable if content exceeds */
@@ -40,12 +43,12 @@ import Summary from "./Summary.vue";
 
 /* Summary section (30% width) */
 .summary {
-  flex: 2.5;
+  flex: 4;
   background-color: var(--surface-light-0); /* Optional: background color */
   padding: 20px;
   overflow-y: auto; /* Scrollable if content exceeds */
   margin-left: -2vw;
-  min-width: fit-content;
+  min-width: 250px;
   text-wrap: none;
 }
 </style>

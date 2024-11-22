@@ -46,6 +46,10 @@ import Button from "primevue/button";
 import Menubar from "primevue/menubar";
 import Card from "primevue/card";
 import { Divider } from "primevue";
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
+import ColumnGroup from "primevue/columngroup"; // optional
+import Row from "primevue/row"; // optional
 
 // import Firebase
 import "./firebase/init.js";
@@ -69,6 +73,10 @@ app.component("Button", Button);
 app.component("Menubar", Menubar);
 app.component("Card", Card);
 app.component("Divider", Divider);
+app.component("DataTable", DataTable);
+app.component("Column", Column);
+app.component("ColumnGroup", ColumnGroup);
+app.component("Row", Row);
 
 app.use(createPinia());
 app.use(router);

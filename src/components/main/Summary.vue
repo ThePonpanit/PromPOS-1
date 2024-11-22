@@ -3,35 +3,61 @@
     <template #header>
       <h1>Summary</h1>
     </template>
+
     <template #content>
-      <ul>
-        <li v-for="item in selectedItems" :key="item.id">
-          {{ item.name }} - ${{ item.price }}
-        </li>
-      </ul>
-      <p>Total: ${{ total }}</p>
-    </template>
-    <template #footer>
-      <Button @click="checkout">Checkout</Button>
+      <DataTable
+        :value="selectedItemsWithTotal"
+        responsiveLayout="scroll"
+        stripedRows
+        style="overflow-y: auto; height: 55vh"
+      >
+        <Column
+          field="name"
+          header="Item Name"
+          :style="{ width: '45%' }"
+        ></Column>
+        <Column header="Price" :style="{ width: '15%' }">
+          <template #body="slotProps">฿{{ slotProps.data.price }}</template>
+        </Column>
+        <Column header="Quantity" :style="{ width: '15%' }">
+          <template #body="slotProps">{{ slotProps.data.quantity }}</template>
+        </Column>
+        <Column header="Total Price" :style="{ width: '15%' }">
+          <template #body="slotProps"
+            >฿{{ slotProps.data.totalPrice }}</template
+          >
+        </Column>
+        <Column header="Actions" :style="{ width: '10%' }">
+          <template #body="slotProps">
+            <Button
+              icon="pi pi-minus"
+              @click="removeItem(slotProps.data.id)"
+              severity="danger"
+              rounded
+              outlined
+            />
+          </template>
+        </Column>
+      </DataTable>
+
+      <!-- Footer Summary -->
+      <div class="summary-footer">
+        <p>Total Items: {{ totalItems }}</p>
+        <p>Total Amount: {{ valueNumberFormat(total) }}</p>
+      </div>
     </template>
   </Card>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { useMenuStore } from "./composables/useMenuStore.js";
+import { valueNumberFormatter } from "./utils/valueNumberFormatter.js";
 
-const selectedItems = ref([
-  { id: 1, name: "Item 1", price: 10 },
-  { id: 2, name: "Item 2", price: 15 },
-]);
+const { selectedItemsWithTotal, removeItem, total, totalItems } =
+  useMenuStore();
 
-const total = computed(() =>
-  selectedItems.value.reduce((sum, item) => sum + item.price, 0)
-);
-
-function checkout() {
-  console.log("Checkout with items:", selectedItems.value);
-}
+// Direct usage of the valueNumberFormatter function
+const valueNumberFormat = valueNumberFormatter;
 </script>
 
 <style scoped>
