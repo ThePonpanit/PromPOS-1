@@ -82,6 +82,9 @@ export const useMenuStore = defineStore(
         total: total.value,
         status: "pending", // Order status: 'pending', 'sent', 'failed'
         timestamp: new Date().toISOString(),
+        timestampUTC7: new Date().toLocaleString("en-US", {
+          timeZone: "Asia/Bangkok",
+        }),
       };
 
       orders.value.push(order);

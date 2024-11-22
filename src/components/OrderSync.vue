@@ -1,6 +1,6 @@
 <template>
-  <!-- show color dot status for the is online -->
-  <div class="network-status">
+  <!-- Dynamically set the border color based on network status -->
+  <div :class="['network-status', { online: isOnline, offline: !isOnline }]">
     <p v-if="isOnline" style="color: green">
       <span class="material-icons dot">wifi</span>
       Online
@@ -19,11 +19,18 @@
 }
 
 .network-status {
-  border: 1px solid var(--border-color);
-  /* Set border color to the net work Status */
-
   padding: 5px;
   border-radius: 10px;
+  border: 2px solid var(--border-color); /* Default border color */
+}
+
+/* Add conditional styles for online and offline states */
+.network-status.online {
+  border-color: green;
+}
+
+.network-status.offline {
+  border-color: red;
 }
 
 .network-status p {
@@ -35,23 +42,23 @@
 </style>
 
 <script setup>
+import { ref, onMounted, onUnmounted } from "vue";
 import { useMenuStore } from "@/stores/useMenuStore";
-import { onMounted, onUnmounted } from "vue";
 import { db } from "@/firebase/init.js";
 import { collection, addDoc } from "firebase/firestore";
 
 const menuStore = useMenuStore();
-
+const isOnline = ref(navigator.onLine); // Reactive network status
 let syncInterval;
 
-// Check if the browser is online
-function isOnline() {
-  return navigator.onLine;
+// Listen for network status changes
+function updateNetworkStatus() {
+  isOnline.value = navigator.onLine;
 }
 
 // Sync pending orders with Firestore
 async function syncOrders() {
-  if (!isOnline()) {
+  if (!isOnline.value) {
     console.log("No internet connection. Will retry when online.");
     return;
   }
@@ -80,11 +87,21 @@ async function syncOrders() {
 onMounted(() => {
   // Start the interval to sync orders every 30 seconds
   syncInterval = setInterval(syncOrders, 30000); // 30,000 ms = 30 seconds
-  // Also call it immediately on mount
+
+  // Log that the interval has started
+  console.log("Order sync interval started.");
+
+  // Call syncOrders immediately on mount
   syncOrders();
+
+  // Add event listeners for network status
+  window.addEventListener("online", updateNetworkStatus);
+  window.addEventListener("offline", updateNetworkStatus);
 });
 
 onUnmounted(() => {
   clearInterval(syncInterval);
+  window.removeEventListener("online", updateNetworkStatus);
+  window.removeEventListener("offline", updateNetworkStatus);
 });
 </script>
