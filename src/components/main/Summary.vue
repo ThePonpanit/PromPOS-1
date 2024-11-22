@@ -68,12 +68,14 @@
         <div style="display: flex">
           <div class="summary-item">
             <p class="summary-label">Total Items</p>
-            <p class="summary-value-total-items">{{ totalItems }}</p>
+            <p class="summary-value-total-items sum-value">{{ totalItems }}</p>
           </div>
           <Divider layout="vertical" style="margin-left: 2rem" />
           <div class="summary-item">
             <p class="summary-label">Total Amount</p>
-            <p class="summary-value">{{ valueNumberFormat(total) }}</p>
+            <p class="summary-value sum-value">
+              {{ valueNumberFormat(total) }}
+            </p>
           </div>
         </div>
       </div>
@@ -145,7 +147,7 @@ const valueNumberFormat = valueNumberFormatter;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 20px;
+  margin-top: 1vh;
 }
 
 .summary-item {
@@ -181,5 +183,10 @@ const valueNumberFormat = valueNumberFormatter;
   word-break: break-word;
   text-align: right;
   width: 1rem;
+}
+
+.sum-value {
+  color: green;
+  font-weight: bold;
 }
 </style>

@@ -23,7 +23,7 @@ import CheckoutButton from "./CheckoutButton.vue";
 /* Parent container layout */
 .layout {
   display: flex;
-  height: 85vh; /* Full viewport height */
+  height: 82vh; /* Full viewport height */
   overflow: hidden; /* Prevent scroll if content overflows */
   border-radius: 15px;
 
@@ -48,7 +48,5 @@ import CheckoutButton from "./CheckoutButton.vue";
   padding: 20px;
   overflow-y: auto; /* Scrollable if content exceeds */
   margin-left: -2vw;
-  min-width: 250px;
-  text-wrap: none;
 }
 </style>

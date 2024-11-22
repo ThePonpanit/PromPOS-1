@@ -19,7 +19,7 @@ function checkout() {
 <style scoped>
 button {
   width: 100%;
-  margin-top: 20px;
+  margin-top: 0.5rem;
 }
 
 button:active {
