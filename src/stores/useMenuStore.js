@@ -4,7 +4,14 @@ import { ref, computed } from "vue";
 import defaultImage from "@/assets/default-image.jpg";
 // Import Firebase Firestore
 import { db } from "@/firebase/init.js";
-import { collection, doc, setDoc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+  increment,
+} from "firebase/firestore";
 
 export const useMenuStore = defineStore(
   "menuStore",
@@ -75,13 +82,20 @@ export const useMenuStore = defineStore(
       selectedItems.value = [];
     }
 
-    // Checkout action
+    // **Checkout action**
     async function checkout() {
       if (selectedItems.value.length === 0) return;
 
       // **Define your shop ID**
       const shopId = "shop123"; // Replace with your unique shop ID
       const shopName = "Your Shop Name"; // Replace with your shop name
+
+      // **Get current date in YYYY-MM-DD format**
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+      const day = String(date.getDate()).padStart(2, "0");
+      const dateString = `${year}-${month}-${day}`; // 'YYYY-MM-DD'
 
       // Generate unique order ID
       const generateOrderId = () => `order-${Date.now()}`;
@@ -119,9 +133,41 @@ export const useMenuStore = defineStore(
           });
         }
 
-        // **Create a reference to the order document in the shopOrders subcollection**
-        const orderRef = doc(
+        // **Create a reference to the date document under shopOrders**
+        const dateDocRef = doc(
           collection(db, "orders", shopId, "shopOrders"),
+          dateString
+        );
+
+        // **Ensure the date document exists**
+        const dateDocSnap = await getDoc(dateDocRef);
+        if (!dateDocSnap.exists()) {
+          // If the date document doesn't exist, create it
+          await setDoc(dateDocRef, {
+            date: dateString,
+            createdAt: new Date().toLocaleString("en-US", {
+              timeZone: "Asia/Bangkok",
+            }),
+            totalOrder: 0,
+            grandTotal: 0,
+            lastUpdate: new Date().toLocaleString("en-US", {
+              timeZone: "Asia/Bangkok",
+            }),
+          });
+        }
+
+        // **Update the date document with totalOrder, grandTotal, lastUpdate**
+        await updateDoc(dateDocRef, {
+          totalOrder: increment(1),
+          grandTotal: increment(order.total),
+          lastUpdate: new Date().toLocaleString("en-US", {
+            timeZone: "Asia/Bangkok",
+          }),
+        });
+
+        // **Create a reference to the order document under the date document**
+        const orderRef = doc(
+          collection(db, "orders", shopId, "shopOrders", dateString, "orders"),
           order.id
         );
 
