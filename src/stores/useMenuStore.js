@@ -76,15 +76,20 @@ export const useMenuStore = defineStore(
     function checkout() {
       if (selectedItems.value.length === 0) return;
 
+      // Generate unique order ID
+      const shopId = "shop123"; // Replace with your unique shop ID
+      const generateId = () => `${shopId}-${Date.now()}`;
+      const uid = generateId();
+
       const order = {
-        id: Date.now(), // Use timestamp as a simple unique ID
-        items: selectedItems.value.map((item) => ({ ...item })), // Deep copy items
+        id: uid, // Use timestamp as a simple unique ID
         total: total.value,
         status: "pending", // Order status: 'pending', 'sent', 'failed'
-        timestamp: new Date().toISOString(),
         timestampUTC7: new Date().toLocaleString("en-US", {
           timeZone: "Asia/Bangkok",
         }),
+        timestamp: new Date().toISOString(),
+        items: selectedItems.value.map((item) => ({ ...item })), // Deep copy items
       };
 
       orders.value.push(order);
