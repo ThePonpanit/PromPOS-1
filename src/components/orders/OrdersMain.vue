@@ -34,8 +34,9 @@
               show-icon
               appendTo="body"
               class="date-picker"
-              dateFormat="yy / mm / dd"
-              placeholder="Select a date"
+              dateFormat="yy/mm/dd"
+              placeholder="Select date range"
+              selectionMode="range"
             />
           </div>
         </div>
@@ -53,10 +54,10 @@
       <template #content>
         <!-- Conditional Rendering of Children -->
         <div v-if="selectedOption === 'Firestore Orders'">
-          <OrdersFromFirestore :selectedDate="selectedDate" />
+          <OrdersFromFirestore :selectedDateRange="selectedDate" />
         </div>
         <div v-else-if="selectedOption === 'Persisted Orders'">
-          <PersistedOrdersData :selectedDate="selectedDate" />
+          <PersistedOrdersData :selectedDateRange="selectedDate" />
         </div>
       </template>
     </Card>
@@ -77,37 +78,62 @@ const options = ref([
 const selectedOption = ref("Firestore Orders"); // Default selection
 
 // DatePicker values
-const selectedDateRaw = ref(null); // Raw date object from DatePicker
-const selectedDate = ref(null); // Normalized date (yyyy-mm-dd)
-const selectedDateFormatted = ref(null); // Formatted date (dd/mm/yyyy)
+const selectedDateRaw = ref([]); // Raw date objects from DatePicker
+const selectedDate = ref({ startDate: null, endDate: null }); // Normalized date range (yyyy-mm-dd)
+const selectedDateFormatted = ref(""); // Formatted date range
 
 // Watch for changes in selectedDateRaw and normalize it
 watch(selectedDateRaw, (newValue) => {
-  if (newValue instanceof Date) {
-    // Normalize to yyyy-mm-dd
-    selectedDate.value = `${newValue.getFullYear()}-${String(
-      newValue.getMonth() + 1
-    ).padStart(2, "0")}-${String(newValue.getDate()).padStart(2, "0")}`;
+  if (Array.isArray(newValue) && newValue.length === 2) {
+    const [start, end] = newValue;
 
-    // Format to mmmm dd, yyyy
-    selectedDateFormatted.value = `${newValue.toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    })}`;
+    if (start instanceof Date && end instanceof Date) {
+      // Normalize to yyyy-mm-dd
+      selectedDate.value.startDate = `${start.getFullYear()}-${String(
+        start.getMonth() + 1
+      ).padStart(2, "0")}-${String(start.getDate()).padStart(2, "0")}`;
+
+      selectedDate.value.endDate = `${end.getFullYear()}-${String(
+        end.getMonth() + 1
+      ).padStart(2, "0")}-${String(end.getDate()).padStart(2, "0")}`;
+
+      // Format to mmmm dd, yyyy
+      selectedDateFormatted.value = `${start.toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      })} To ${end.toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      })}`;
+    }
   } else {
-    selectedDate.value = null; // Reset if cleared
-    selectedDateFormatted.value = null;
+    selectedDate.value.startDate = null;
+    selectedDate.value.endDate = null;
+    selectedDateFormatted.value = "";
   }
 });
 
-// Set default date on component mount
+// Set default date range on component mount
 onMounted(() => {
   const today = new Date();
-  selectedDateRaw.value = today; // Set today's date in DatePicker
-  selectedDate.value = `${today.getFullYear()}-${String(
+  selectedDateRaw.value = [today, today]; // Set today's date range
+  selectedDate.value.startDate = `${today.getFullYear()}-${String(
     today.getMonth() + 1
   ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  selectedDate.value.endDate = `${today.getFullYear()}-${String(
+    today.getMonth() + 1
+  ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  selectedDateFormatted.value = `${today.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  })} - ${today.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  })}`;
 });
 
 // Handle button click to set selected option

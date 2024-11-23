@@ -169,34 +169,44 @@ import { useMenuStore } from "@/stores/useMenuStore";
 
 // Correctly define props
 const props = defineProps({
-  selectedDate: {
-    type: String,
-    default: null, // Passed from the parent
+  selectedDateRange: {
+    type: Object,
+    default: () => ({ startDate: null, endDate: null }),
   },
 });
 
 const menuStore = useMenuStore();
 const orders = computed(() => menuStore.orders);
 
-var isLoading = ref(false);
+const isLoading = ref(false);
 
-// Filter orders based on the selected date
+// Filter orders based on the selected date range
 const filteredOrders = computed(() => {
-  if (!props.selectedDate) {
-    return orders.value; // Show all orders if no date is selected
+  if (
+    !props.selectedDateRange ||
+    !props.selectedDateRange.startDate ||
+    !props.selectedDateRange.endDate
+  ) {
+    return orders.value; // Show all orders if no date range is selected
   }
 
+  const startDateStr = props.selectedDateRange.startDate;
+  const endDateStr = props.selectedDateRange.endDate;
+
   return orders.value.filter((order) => {
-    if (!order.timestampUTC7) {
+    if (!order.timestamp) {
       return false;
     }
 
-    const orderDate = new Date(order.timestampUTC7);
+    const orderDate = new Date(order.timestamp); // Convert to local time
     const orderDateStr = `${orderDate.getFullYear()}-${String(
       orderDate.getMonth() + 1
     ).padStart(2, "0")}-${String(orderDate.getDate()).padStart(2, "0")}`;
 
-    return orderDateStr === props.selectedDate;
+    const isIncluded =
+      orderDateStr >= startDateStr && orderDateStr <= endDateStr;
+
+    return isIncluded;
   });
 });
 

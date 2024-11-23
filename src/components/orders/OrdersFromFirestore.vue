@@ -61,9 +61,9 @@ import { collection, getDocs } from "firebase/firestore";
 
 // Accept selectedDate as a prop
 const props = defineProps({
-  selectedDate: {
-    type: String,
-    default: null,
+  selectedDateRange: {
+    type: Object,
+    default: () => ({ startDate: null, endDate: null }),
   },
 });
 
@@ -71,50 +71,83 @@ const props = defineProps({
 const orders = ref([]); // Holds the fetched orders
 const shopId = "shop123"; // Replace with your shop ID
 
-// Fetch orders based on the selected date
-const fetchOrdersByDate = async (date) => {
-  if (!date) {
-    orders.value = []; // Clear orders if no date is selected
+// Helper function to get dates between two dates
+function getDatesBetween(startDateStr, endDateStr) {
+  const dates = [];
+  let currentDate = new Date(startDateStr);
+  const endDate = new Date(endDateStr);
+
+  while (currentDate <= endDate) {
+    const dateStr = `${currentDate.getFullYear()}-${String(
+      currentDate.getMonth() + 1
+    ).padStart(2, "0")}-${String(currentDate.getDate()).padStart(2, "0")}`;
+
+    dates.push(dateStr);
+
+    // Move to next day
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return dates;
+}
+
+// Fetch orders based on the selected date range
+const fetchOrdersByDateRange = async (startDateStr, endDateStr) => {
+  if (!startDateStr || !endDateStr) {
+    orders.value = []; // Clear orders if no date range is selected
     return;
   }
 
   try {
-    const datePath = `${date}`; // e.g., "2024-11-23"
-    const ordersRef = collection(
-      db,
-      "orders",
-      shopId,
-      "shopOrders",
-      datePath,
-      "orders"
-    );
+    const dateList = getDatesBetween(startDateStr, endDateStr);
 
-    const querySnapshot = await getDocs(ordersRef);
+    const allOrders = [];
 
-    // Map Firestore data to an array
-    orders.value = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    console.log(`Orders for ${date} loaded:`, orders.value);
+    for (const datePath of dateList) {
+      const ordersRef = collection(
+        db,
+        "orders",
+        shopId,
+        "shopOrders",
+        datePath,
+        "orders"
+      );
+
+      const querySnapshot = await getDocs(ordersRef);
+
+      // Map Firestore data to an array
+      const ordersForDate = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      allOrders.push(...ordersForDate);
+    }
+
+    orders.value = allOrders;
   } catch (error) {
-    console.error(`Error fetching orders for date ${date}:`, error);
+    console.error(
+      `Error fetching orders for date range ${startDateStr} - ${endDateStr}:`,
+      error
+    );
     orders.value = []; // Clear on error
   }
 };
 
-// Watch props.selectedDate and fetch orders when it changes
+// Watch props.selectedDateRange and fetch orders when it changes
 watch(
-  () => props.selectedDate,
-  (newDate) => {
-    console.log("Fetching orders for date:", newDate);
-    fetchOrdersByDate(newDate);
+  () => [props.selectedDateRange.startDate, props.selectedDateRange.endDate],
+  ([newStartDate, newEndDate]) => {
+    fetchOrdersByDateRange(newStartDate, newEndDate);
   }
 );
 
-// Fetch orders for the selected date on component mount
+// Fetch orders for the selected date range on component mount
 onMounted(() => {
-  fetchOrdersByDate(props.selectedDate);
+  fetchOrdersByDateRange(
+    props.selectedDateRange.startDate,
+    props.selectedDateRange.endDate
+  );
 });
 
 // Get display label for order status
