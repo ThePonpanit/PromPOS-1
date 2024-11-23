@@ -25,14 +25,23 @@
         </template>
         <Column field="id" header="Order ID"></Column>
         <Column header="Data Status">
-          <!-- make the field="status" to uppercase , only the first letter is Uppercase-->
           <template #body="storedData">
-            {{
-              storedData.data.sendStatus.charAt(0).toUpperCase() +
-              storedData.data.sendStatus.slice(1)
-            }}
+            <span style="display: flex; align-items: center; gap: 0.5rem">
+              <!-- Display the status text -->
+              {{
+                storedData.data.sendStatus.charAt(0).toUpperCase() +
+                storedData.data.sendStatus.slice(1)
+              }}
+              <!-- Conditionally render the icon -->
+              <i
+                v-if="storedData.data.sendStatus === 'pending'"
+                class="pi pi-exclamation-triangle"
+                style="color: #ffc107"
+              />
+            </span>
           </template>
         </Column>
+
         <Column header="Grand Total">
           <template #body="storedData">฿ {{ storedData.data.total }}</template>
         </Column>
