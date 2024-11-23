@@ -155,6 +155,7 @@
             type="submit"
             class="p-button-success save-button"
             :loading="isLoading"
+            :disabled="isSaveDisabled"
           />
         </div>
       </form>
@@ -255,6 +256,15 @@ const updateOrderStatus = async () => {
     // Optionally, handle the error (e.g., show a notification to the user)
   }
 };
+
+// Check if the Save button should be disabled
+const isSaveDisabled = computed(() => {
+  // Disable if the selected order status matches the current status or if no status is selected
+  return (
+    !selectedStatus.value ||
+    selectedOrder.value?.orderStatus === selectedStatus.value.value
+  );
+});
 </script>
 
 <style scoped>
@@ -271,6 +281,22 @@ const updateOrderStatus = async () => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+/* style for the disabled button */
+.p-button-success:disabled {
+  background-color: gray;
+  border-color: gray;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+/* style the disabled hover effect */
+.p-button-success:disabled:hover {
+  background-color: gray;
+  border-color: gray;
+  color: #fff;
+  cursor: not-allowed;
 }
 </style>
 
