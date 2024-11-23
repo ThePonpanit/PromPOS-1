@@ -174,9 +174,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed } from "vue";
 
-const orders = ref([]);
+import { useMenuStore } from "@/stores/useMenuStore";
+
+const menuStore = useMenuStore();
+const orders = computed(() => menuStore.orders);
+
 const isDialogVisible = ref(false); // Controls dialog visibility
 const selectedOrder = ref(null); // Holds the currently selected order for editing
 const selectedStatus = ref(null); // Holds the currently selected status in the dropdown
@@ -186,21 +190,6 @@ const statusOptions = ref([
   { label: "Cancelled", value: "cancelled" },
   { label: "Success", value: "success" }, // Add this line
 ]);
-
-// Load orders from localStorage
-onMounted(() => {
-  const storedData = localStorage.getItem("menuStore");
-  if (storedData) {
-    const localData = JSON.parse(storedData);
-    if (localData.orders) {
-      orders.value = localData.orders;
-    } else {
-      console.error("No orders found in local storage data.");
-    }
-  } else {
-    console.error("No menuStore data found in local storage.");
-  }
-});
 
 // Open the dialog and set the selected order
 const openDialog = (storedData) => {
@@ -238,6 +227,7 @@ const updateOrderStatus = () => {
 
     console.log(`Order ${selectedOrder.value.id} updated successfully.`);
   }
+
   isDialogVisible.value = false; // Close the dialog
 };
 </script>

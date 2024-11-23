@@ -187,11 +187,21 @@ export const useMenuStore = defineStore(
       }
     }
 
-    // Update order status
+    // Update order status and ensure DataTable reflects changes
     function updateOrderStatus(orderId, newStatus) {
-      const order = orders.value.find((o) => o.id === orderId);
-      if (order) {
-        order.sendStatus = newStatus;
+      const index = orders.value.findIndex((o) => o.id === orderId);
+      if (index !== -1) {
+        // Replace the object with a new one to trigger reactivity
+        orders.value[index] = { ...orders.value[index], sendStatus: newStatus };
+
+        // Replace the entire array to ensure Vue detects the update
+        orders.value = [...orders.value];
+
+        // Persist the updated orders back to localStorage
+        localStorage.setItem(
+          "menuStore",
+          JSON.stringify({ orders: orders.value })
+        );
       }
     }
 
