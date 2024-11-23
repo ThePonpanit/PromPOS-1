@@ -166,7 +166,60 @@ export const useMenuStore = defineStore(
       if (isOnline && orderId !== "n/a") {
         // Attempt to send order to Firestore immediately
         try {
-          // ... (existing code to send order to Firestore)
+          // **Create a reference to the date document under shopOrders**
+          const dateDocRef = doc(
+            collection(db, "orders", shopId, "shopOrders"),
+            dateString
+          );
+
+          // **Ensure the date document exists**
+          const dateDocSnap = await getDoc(dateDocRef);
+          if (!dateDocSnap.exists()) {
+            // If the date document doesn't exist, create it
+            await setDoc(dateDocRef, {
+              date: dateString,
+              createdAt: new Date().toLocaleString("en-US", {
+                timeZone: "Asia/Bangkok",
+              }),
+              totalOrder: 0,
+              grandTotal: 0,
+              lastUpdate: new Date().toLocaleString("en-US", {
+                timeZone: "Asia/Bangkok",
+              }),
+            });
+          }
+
+          // **Update the date document with totalOrder, grandTotal, lastUpdate**
+          await updateDoc(dateDocRef, {
+            totalOrder: increment(1),
+            grandTotal: increment(order.total),
+            lastUpdate: new Date().toLocaleString("en-US", {
+              timeZone: "Asia/Bangkok",
+            }),
+          });
+
+          // **Create a reference to the order document under the date document**
+          const orderRef = doc(
+            collection(
+              db,
+              "orders",
+              shopId,
+              "shopOrders",
+              dateString,
+              "orders"
+            ),
+            order.id
+          );
+
+          // Send order to Firestore with specified document ID
+          await setDoc(orderRef, {
+            ...order,
+            sendStatus: "sent", // Update status to sent
+          });
+
+          // Update order status in the store
+          updateOrderSendStatus(order.id, "sent");
+          console.log(`Order ${order.id} sent successfully.`);
         } catch (error) {
           console.error("Error sending order:", error);
           // Order will be synced later

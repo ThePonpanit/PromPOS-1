@@ -93,6 +93,14 @@
           </span>
         </p>
 
+        <!-- Local ID -->
+        <p>
+          <strong>Local ID:</strong>
+          <span style="margin-left: 1rem">
+            {{ selectedOrder?.localID || "N/A" }}
+          </span>
+        </p>
+
         <!-- Timestamp -->
         <p>
           <strong>Timestamp:</strong>
