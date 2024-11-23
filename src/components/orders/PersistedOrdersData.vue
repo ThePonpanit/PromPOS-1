@@ -42,8 +42,12 @@
       </template>
     </Column>
 
-    <Column header="Grand Total">
-      <template #body="{ data }">฿ {{ data.total ?? 0 }}</template>
+    <Column header="Grand Total" style="text-align: right">
+      <template #body="{ data }">
+        <span class="mono-fonts" style="margin-right: 1rem">
+          {{ formatPrice(data.total) ?? 0 }}
+        </span>
+      </template>
     </Column>
 
     <Column field="timestampUTC7" header="Timestamp"></Column>
@@ -129,8 +133,8 @@
         <!-- Grand Total -->
         <p>
           <strong>Grand Total:</strong>
-          <span class="grand-total">
-            ฿ {{ selectedOrder?.total || "N/A" }}
+          <span class="grand-total mono-fonts">
+            ฿ {{ formatPrice(selectedOrder?.total) || "N/A" }}
           </span>
         </p>
       </div>
@@ -151,7 +155,9 @@
               </span>
               x {{ item.name }}
             </span>
-            <span class="item-price">฿{{ item.price }}</span>
+            <span class="item-price mono-fonts">{{
+              formatPrice(item.price)
+            }}</span>
           </li>
         </ul>
       </div>
@@ -309,6 +315,11 @@ const isSaveDisabled = computed(() => {
     selectedOrder.value?.orderStatus === selectedStatus.value.value
   );
 });
+
+// Helper function to format the number to 2 decimal places and add the comma separator
+const formatPrice = (price) => {
+  return price?.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
 </script>
 
 <style scoped>
@@ -372,7 +383,7 @@ const isSaveDisabled = computed(() => {
 }
 </style>
 
-<style>
+<style scoped>
 .order-dialog {
   text-wrap: nowrap;
   min-width: 350px;

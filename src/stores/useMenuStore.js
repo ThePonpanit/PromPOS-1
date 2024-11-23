@@ -36,6 +36,11 @@ export const useMenuStore = defineStore(
       { id: 13, name: "Item 13", price: 70, image: defaultImage },
       { id: 14, name: "Item 14", price: 75, image: defaultImage },
       { id: 15, name: "Item 15", price: 80, image: defaultImage },
+      { id: 16, name: "Item 16", price: 85, image: defaultImage },
+      { id: 17, name: "Item 17", price: 90, image: defaultImage },
+      { id: 18, name: "Item 18", price: 95.25, image: defaultImage },
+      { id: 19, name: "Item 19", price: 100.5, image: defaultImage },
+      { id: 20, name: "Item 20", price: 105.75, image: defaultImage },
       // ... add more items as needed
     ]);
 

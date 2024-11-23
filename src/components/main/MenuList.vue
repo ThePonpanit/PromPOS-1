@@ -12,7 +12,7 @@
           <img :src="item.image" :alt="item.name" class="menu-item-image" />
         </template>
         <template #title>{{ item.name }}</template>
-        <template #subtitle> ฿ {{ item.price }}</template>
+        <template #subtitle> ฿ {{ formatPrice(item.price) }}</template>
       </Card>
     </div>
   </div>
@@ -25,6 +25,11 @@ const menuStore = useMenuStore();
 
 function selectItem(item) {
   menuStore.addItem(item);
+}
+
+// Helper function to format price to 2 decimal places
+function formatPrice(price) {
+  return price?.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 </script>
 

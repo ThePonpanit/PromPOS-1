@@ -30,14 +30,16 @@
           :style="{ width: '45%' }"
         ></Column>
         <Column header="Price" :style="{ width: '15%' }">
-          <template #body="slotProps">฿{{ slotProps.data.price }}</template>
+          <template #body="slotProps"
+            >฿{{ formatPrice(slotProps.data.price) }}</template
+          >
         </Column>
         <Column header="Quantity" :style="{ width: '15%' }">
           <template #body="slotProps">{{ slotProps.data.quantity }}</template>
         </Column>
         <Column header="Total Price" :style="{ width: '15%' }">
           <template #body="slotProps"
-            >฿{{ slotProps.data.totalPrice }}</template
+            >฿{{ formatPrice(slotProps.data.totalPrice) }}</template
           >
         </Column>
         <Column header="Actions" :style="{ width: '10%' }">
@@ -94,6 +96,11 @@ const menuStore = useMenuStore();
 
 // Direct usage of the valueNumberFormatter function
 const valueNumberFormat = valueNumberFormatter;
+
+// Helper function to format price to 2 decimal places
+function formatPrice(price) {
+  return price?.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 </script>
 
 <style scoped>
