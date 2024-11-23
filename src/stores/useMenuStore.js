@@ -104,7 +104,7 @@ export const useMenuStore = defineStore(
       const order = {
         id: orderId,
         total: total.value,
-        status: "pending", // Initially pending
+        sendStatus: "pending", // Initially pending
         timestampUTC7: new Date().toLocaleString("en-US", {
           timeZone: "Asia/Bangkok",
         }),
@@ -175,7 +175,7 @@ export const useMenuStore = defineStore(
         // Send order to Firestore with specified document ID
         await setDoc(orderRef, {
           ...order,
-          status: "sent", // Update status to sent
+          sendStatus: "sent", // Update status to sent
         });
 
         // Update order status in the store
@@ -188,10 +188,10 @@ export const useMenuStore = defineStore(
     }
 
     // Update order status
-    function updateOrderStatus(orderId, status) {
+    function updateOrderStatus(orderId, newStatus) {
       const order = orders.value.find((o) => o.id === orderId);
       if (order) {
-        order.status = status;
+        order.sendStatus = newStatus;
       }
     }
 

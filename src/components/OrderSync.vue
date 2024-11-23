@@ -12,35 +12,6 @@
   </div>
 </template>
 
-<style scoped>
-.dot {
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.network-status {
-  padding: 5px;
-  border-radius: 10px;
-  border: 2px solid var(--border-color); /* Default border color */
-}
-
-/* Add conditional styles for online and offline states */
-.network-status.online {
-  border-color: green;
-}
-
-.network-status.offline {
-  border-color: red;
-}
-
-.network-status p {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-}
-</style>
-
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 import { useMenuStore } from "@/stores/useMenuStore";
@@ -64,7 +35,7 @@ async function syncOrders() {
   }
 
   const pendingOrders = menuStore.orders.filter(
-    (order) => order.status !== "sent"
+    (order) => order.sendStatus !== "sent"
   );
 
   for (const order of pendingOrders) {
@@ -72,7 +43,7 @@ async function syncOrders() {
       // Send order to Firestore
       await addDoc(collection(db, "orders"), {
         ...order,
-        status: "sent",
+        sendStatus: "sent",
       });
       // Update order status in the store
       menuStore.updateOrderStatus(order.id, "sent");
@@ -105,3 +76,32 @@ onUnmounted(() => {
   window.removeEventListener("offline", updateNetworkStatus);
 });
 </script>
+
+<style scoped>
+.dot {
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.network-status {
+  padding: 5px;
+  border-radius: 10px;
+  border: 2px solid var(--border-color); /* Default border color */
+}
+
+/* Add conditional styles for online and offline states */
+.network-status.online {
+  border-color: green;
+}
+
+.network-status.offline {
+  border-color: red;
+}
+
+.network-status p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+</style>

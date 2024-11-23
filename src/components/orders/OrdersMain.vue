@@ -28,8 +28,8 @@
           <!-- make the field="status" to uppercase , only the first letter is Uppercase-->
           <template #body="storedData">
             {{
-              storedData.data.status.charAt(0).toUpperCase() +
-              storedData.data.status.slice(1)
+              storedData.data.sendStatus.charAt(0).toUpperCase() +
+              storedData.data.sendStatus.slice(1)
             }}
           </template>
         </Column>
@@ -190,7 +190,6 @@ const statusOptions = ref([
 // Load orders from localStorage
 onMounted(() => {
   const storedData = localStorage.getItem("menuStore");
-  console.log("Stored Data:", storedData); // Debugging log
   if (storedData) {
     const localData = JSON.parse(storedData);
     if (localData.orders) {
