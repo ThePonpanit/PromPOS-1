@@ -5,7 +5,8 @@
     responsiveLayout="scroll"
     stripedRows
     scrollable
-    scrollHeight="47vh"
+    scrollHeight="55vh"
+    style="height: 55vh"
   >
     <template #empty>
       <tr style="display: flex; justify-content: center; align-items: center">
@@ -15,7 +16,16 @@
       </tr>
     </template>
 
-    <Column field="id" header="Order ID"></Column>
+    <Column header="Local ID">
+      <template #body="{ data }">
+        <span>{{ data.localID || "N/A" }}</span>
+      </template>
+    </Column>
+    <Column header="Database ID">
+      <template #body="{ data }">
+        <span>{{ data.id || "N/A" }}</span>
+      </template>
+    </Column>
 
     <Column header="Data Status">
       <template #body="{ data }">
@@ -54,10 +64,10 @@
     <Column header="Action">
       <template #body="{ data }">
         <Button
-          icon="pi pi-pencil"
-          class="p-button-rounded p-button-info"
+          label="Edit"
+          class="p-button-rounded p-button-info custom-edit-button"
           @click="openDialog(data)"
-          outlined
+          text
         />
       </template>
     </Column>
@@ -75,14 +85,27 @@
     <div class="dialog-content">
       <!-- Order Information -->
       <div class="order-info">
-        <p><strong>Order ID:</strong> {{ selectedOrder?.id || "N/A" }}</p>
+        <!-- Order ID -->
+        <p>
+          <strong>Order ID:</strong>
+          <span style="margin-left: 1rem">
+            {{ selectedOrder?.id || "N/A" }}
+          </span>
+        </p>
+
+        <!-- Timestamp -->
         <p>
           <strong>Timestamp:</strong>
-          {{ selectedOrder?.timestampUTC7 || "N/A" }}
+          <span style="margin-left: 1rem">
+            {{ selectedOrder?.timestampUTC7 || "N/A" }}
+          </span>
         </p>
+
+        <!-- Order Status -->
         <p>
           <strong>Current Order Status:</strong>
           <span
+            style="margin-left: 1rem"
             :class="{
               'status-underline-cancelled':
                 selectedOrder?.orderStatus === 'cancelled',
@@ -94,6 +117,8 @@
             {{ getCurrentStatusLabel(selectedOrder?.orderStatus || "unknown") }}
           </span>
         </p>
+
+        <!-- Grand Total -->
         <p>
           <strong>Grand Total:</strong>
           <span class="grand-total">
@@ -101,6 +126,7 @@
           </span>
         </p>
       </div>
+
       <Divider />
       <!-- Order Items -->
       <div class="order-items">
@@ -319,6 +345,22 @@ const isSaveDisabled = computed(() => {
   text-decoration: underline;
   text-underline-offset: 4px;
   text-decoration-color: #4caf50; /* Green underline */
+}
+
+.custom-edit-button {
+  height: 20px !important; /* Ensure button height matches other cell content */
+  padding: 0 !important; /* Remove internal padding */
+  margin: 0 !important; /* Remove external margin */
+  line-height: 1 !important; /* Adjust line height to reduce vertical space */
+}
+
+.custom-edit-button:hover {
+  background-color: none !important;
+}
+
+/* Adjust alignment for cells with buttons */
+.p-datatable-tbody > tr > td {
+  vertical-align: middle !important;
 }
 </style>
 

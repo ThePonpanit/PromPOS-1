@@ -4,19 +4,28 @@
     :value="orders"
     responsiveLayout="scroll"
     scrollable
-    scrollHeight="55vh"
     stripedRows
+    scrollHeight="55vh"
     style="height: 55vh"
   >
     <template #empty>
-      <tr>
+      <tr style="display: flex; justify-content: center; align-items: center">
         <td colspan="5" style="text-align: center; color: gray">
-          🚫 No items to display.
+          🚫 No orders found for the selected date.
         </td>
       </tr>
     </template>
 
-    <Column field="id" header="Order ID"></Column>
+    <Column header="Local ID">
+      <template #body="{ data }">
+        <span>{{ data.localID || "N/A" }}</span>
+      </template>
+    </Column>
+    <Column header="Database ID">
+      <template #body="{ data }">
+        <span>{{ data.id || "N/A" }}</span>
+      </template>
+    </Column>
 
     <Column header="Data Status">
       <template #body="{ data }">

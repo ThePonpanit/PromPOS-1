@@ -1,5 +1,5 @@
 <template>
-  <!-- Dynamically set the border color based on network status -->
+  <!-- Network Status Indicator -->
   <div :class="['network-status', { online: isOnline, offline: !isOnline }]">
     <p v-if="isOnline" style="color: green">
       <span class="material-icons dot">wifi</span>
@@ -23,6 +23,7 @@ import {
   getDoc,
   updateDoc,
   increment,
+  runTransaction,
 } from "firebase/firestore";
 
 const menuStore = useMenuStore();
@@ -32,15 +33,6 @@ let syncInterval;
 // Listen for network status changes
 function updateNetworkStatus() {
   isOnline.value = navigator.onLine;
-}
-
-// Helper function to extract date in 'YYYY-MM-DD' format from the timestamp
-function extractDateFromTimestamp(timestampUTC7) {
-  const [month, day, year] = timestampUTC7.split(",")[0].split("/");
-  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(
-    2,
-    "0"
-  )}`;
 }
 
 // Sync pending orders with Firestore
@@ -57,30 +49,64 @@ async function syncOrders() {
   for (const order of pendingOrders) {
     try {
       const shopId = "shop123"; // Use your shop ID here
-      const dateString = extractDateFromTimestamp(order.timestampUTC7);
+      const shopName = "Your Shop Name"; // Use your shop name here
+
+      // Extract dateString from order.timestamp
+      const orderDate = new Date(order.timestamp);
+      const year = orderDate.getFullYear();
+      const month = String(orderDate.getMonth() + 1).padStart(2, "0");
+      const day = String(orderDate.getDate()).padStart(2, "0");
+      const dateString = `${year}-${month}-${day}`; // 'YYYY-MM-DD'
 
       // **Create a reference to the shop document**
       const shopDocRef = doc(db, "orders", shopId);
 
-      // Ensure the shop document exists
-      const shopDocSnap = await getDoc(shopDocRef);
-      if (!shopDocSnap.exists()) {
-        await setDoc(shopDocRef, {
-          shopId: shopId,
-          shopName: "Your Shop Name",
-          createdAt: new Date().toLocaleString("en-US", {
-            timeZone: "Asia/Bangkok",
-          }),
+      let orderId = order.id;
+
+      if (!order.id || order.id === "n/a") {
+        // Need to generate orderId
+        let invoiceNumber = 0;
+
+        await runTransaction(db, async (transaction) => {
+          const shopDoc = await transaction.get(shopDocRef);
+          if (!shopDoc.exists()) {
+            invoiceNumber = 1;
+            transaction.set(shopDocRef, {
+              shopId: shopId,
+              shopName: shopName,
+              createdAt: new Date().toLocaleString("en-US", {
+                timeZone: "Asia/Bangkok",
+              }),
+              invoiceNumber: invoiceNumber,
+            });
+          } else {
+            const shopData = shopDoc.data();
+            invoiceNumber = shopData.invoiceNumber || 0;
+            invoiceNumber += 1;
+            transaction.update(shopDocRef, {
+              invoiceNumber: invoiceNumber,
+            });
+          }
         });
+
+        // Generate the orderId
+        const yearString = String(new Date().getFullYear()).slice(-2); // e.g., '24'
+        const invoiceNumberString = String(invoiceNumber).padStart(6, "0"); // e.g., '000001'
+        orderId = `${shopId}-${yearString}${invoiceNumberString}`;
+
+        // Update the order object
+        order.id = orderId;
+
+        // Update the order in the local store
+        menuStore.updateOrderId(order.localID, orderId);
       }
 
-      // **Create a reference to the date document under shopOrders**
+      // Ensure the date document exists
       const dateDocRef = doc(
         collection(db, "orders", shopId, "shopOrders"),
         dateString
       );
 
-      // Ensure the date document exists
       const dateDocSnap = await getDoc(dateDocRef);
       if (!dateDocSnap.exists()) {
         await setDoc(dateDocRef, {
@@ -96,7 +122,7 @@ async function syncOrders() {
         });
       }
 
-      // Update the date document with totalOrder, grandTotal, lastUpdate
+      // Update the date document
       await updateDoc(dateDocRef, {
         totalOrder: increment(1),
         grandTotal: increment(order.total),
@@ -105,16 +131,16 @@ async function syncOrders() {
         }),
       });
 
-      // **Create a reference to the order document under the date document**
+      // **Create a reference to the order document**
       const orderRef = doc(
         collection(db, "orders", shopId, "shopOrders", dateString, "orders"),
-        order.id
+        orderId
       );
 
-      // Send order to Firestore with specified document ID
+      // Send order to Firestore
       await setDoc(orderRef, {
         ...order,
-        sendStatus: "sent", // Update status to sent
+        sendStatus: "sent",
       });
 
       // Update order status in the store
@@ -132,14 +158,14 @@ onMounted(() => {
   // Start the interval to sync orders every 30 seconds
   syncInterval = setInterval(syncOrders, 30000); // 30,000 ms = 30 seconds
 
-  // Log that the interval has started
-  console.log("Order sync interval started.");
-
   // Call syncOrders immediately on mount
   syncOrders();
 
   // Add event listeners for network status
-  window.addEventListener("online", updateNetworkStatus);
+  window.addEventListener("online", () => {
+    updateNetworkStatus();
+    syncOrders(); // Try to sync immediately when back online
+  });
   window.addEventListener("offline", updateNetworkStatus);
 });
 

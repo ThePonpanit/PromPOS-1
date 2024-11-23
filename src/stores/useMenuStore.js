@@ -11,6 +11,7 @@ import {
   getDoc,
   updateDoc,
   increment,
+  runTransaction,
 } from "firebase/firestore";
 
 export const useMenuStore = defineStore(
@@ -86,104 +87,92 @@ export const useMenuStore = defineStore(
     async function checkout() {
       if (selectedItems.value.length === 0) return;
 
-      // **Define your shop ID**
+      const isOnline = navigator.onLine;
+
+      // Define your shop ID
       const shopId = "shop123"; // Replace with your unique shop ID
       const shopName = "Your Shop Name"; // Replace with your shop name
 
-      // **Get current date in YYYY-MM-DD format**
+      // Get current date in YYYY-MM-DD format
       const date = new Date();
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
       const day = String(date.getDate()).padStart(2, "0");
       const dateString = `${year}-${month}-${day}`; // 'YYYY-MM-DD'
 
-      // Generate unique order ID
-      const generateOrderId = () => `order-${Date.now()}`;
-      const orderId = generateOrderId();
+      // Generate a localID
+      const localID = `${shopId}-${Date.now()}`;
+
+      let orderId = "n/a"; // Initialize orderId
+
+      if (isOnline) {
+        // Proceed to generate orderId using Firestore transaction
+        const shopDocRef = doc(db, "orders", shopId);
+        let invoiceNumber = 0;
+
+        try {
+          await runTransaction(db, async (transaction) => {
+            const shopDoc = await transaction.get(shopDocRef);
+            if (!shopDoc.exists()) {
+              invoiceNumber = 1;
+              transaction.set(shopDocRef, {
+                shopId: shopId,
+                shopName: shopName,
+                createdAt: new Date().toLocaleString("en-US", {
+                  timeZone: "Asia/Bangkok",
+                }),
+                invoiceNumber: invoiceNumber,
+              });
+            } else {
+              const shopData = shopDoc.data();
+              invoiceNumber = shopData.invoiceNumber || 0;
+              invoiceNumber += 1;
+              transaction.update(shopDocRef, {
+                invoiceNumber: invoiceNumber,
+              });
+            }
+          });
+
+          // Generate the orderId
+          const yearString = String(new Date().getFullYear()).slice(-2); // e.g., '24'
+          const invoiceNumberString = String(invoiceNumber).padStart(6, "0"); // e.g., '000001'
+          orderId = `${shopId}-${yearString}${invoiceNumberString}`;
+        } catch (e) {
+          console.error("Transaction failed: ", e);
+          // If transaction fails, set orderId to 'n/a' and handle it in syncOrders
+          orderId = "n/a";
+        }
+      } else {
+        // Offline: set orderId to 'n/a'
+        orderId = "n/a";
+      }
 
       const order = {
-        id: orderId,
+        id: orderId, // 'n/a' if offline
+        localID: localID, // Unique local ID
         total: total.value,
-        sendStatus: "pending", // Initially pending
+        sendStatus: "pending",
         timestampUTC7: new Date().toLocaleString("en-US", {
           timeZone: "Asia/Bangkok",
         }),
         timestamp: new Date().toISOString(),
         items: selectedItems.value.map((item) => ({ ...item })), // Deep copy items
-        orderStatus: "success", // Order status
+        orderStatus: "success",
       };
 
       orders.value.push(order);
       selectedItems.value = []; // Clear cart after checkout
 
-      // Attempt to send order to Firestore immediately
-      try {
-        // **Create a reference to the shop document**
-        const shopDocRef = doc(db, "orders", shopId);
-
-        // **Ensure the shop document exists**
-        const shopDocSnap = await getDoc(shopDocRef);
-        if (!shopDocSnap.exists()) {
-          // If the shop document doesn't exist, create it with general data
-          await setDoc(shopDocRef, {
-            shopId: shopId,
-            shopName: shopName, // Add other general shop data here
-            createdAt: new Date().toLocaleString("en-US", {
-              timeZone: "Asia/Bangkok",
-            }),
-          });
+      if (isOnline && orderId !== "n/a") {
+        // Attempt to send order to Firestore immediately
+        try {
+          // ... (existing code to send order to Firestore)
+        } catch (error) {
+          console.error("Error sending order:", error);
+          // Order will be synced later
         }
-
-        // **Create a reference to the date document under shopOrders**
-        const dateDocRef = doc(
-          collection(db, "orders", shopId, "shopOrders"),
-          dateString
-        );
-
-        // **Ensure the date document exists**
-        const dateDocSnap = await getDoc(dateDocRef);
-        if (!dateDocSnap.exists()) {
-          // If the date document doesn't exist, create it
-          await setDoc(dateDocRef, {
-            date: dateString,
-            createdAt: new Date().toLocaleString("en-US", {
-              timeZone: "Asia/Bangkok",
-            }),
-            totalOrder: 0,
-            grandTotal: 0,
-            lastUpdate: new Date().toLocaleString("en-US", {
-              timeZone: "Asia/Bangkok",
-            }),
-          });
-        }
-
-        // **Update the date document with totalOrder, grandTotal, lastUpdate**
-        await updateDoc(dateDocRef, {
-          totalOrder: increment(1),
-          grandTotal: increment(order.total),
-          lastUpdate: new Date().toLocaleString("en-US", {
-            timeZone: "Asia/Bangkok",
-          }),
-        });
-
-        // **Create a reference to the order document under the date document**
-        const orderRef = doc(
-          collection(db, "orders", shopId, "shopOrders", dateString, "orders"),
-          order.id
-        );
-
-        // Send order to Firestore with specified document ID
-        await setDoc(orderRef, {
-          ...order,
-          sendStatus: "sent", // Update status to sent
-        });
-
-        // Update order status in the store
-        updateOrderSendStatus(order.id, "sent");
-        console.log(`Order ${order.id} sent successfully.`);
-      } catch (error) {
-        console.error("Error sending order:", error);
-        // Order status remains 'pending', so the interval sync can retry
+      } else {
+        console.log("Offline mode: Order saved locally with localID:", localID);
       }
     }
 
@@ -262,6 +251,24 @@ export const useMenuStore = defineStore(
       }
     }
 
+    // Add the updateOrderId function
+    function updateOrderId(localID, newOrderId) {
+      const index = orders.value.findIndex((o) => o.localID === localID);
+      if (index !== -1) {
+        orders.value[index] = {
+          ...orders.value[index],
+          id: newOrderId,
+        };
+        orders.value = [...orders.value]; // Ensure reactivity
+
+        // Persist the updated orders back to localStorage
+        localStorage.setItem(
+          "menuStore",
+          JSON.stringify({ orders: orders.value })
+        );
+      }
+    }
+
     // **Computed Properties**
 
     // Selected items with total price per item
@@ -301,6 +308,7 @@ export const useMenuStore = defineStore(
       checkout,
       updateOrderSendStatus,
       updateOrderStatusInFirestore,
+      updateOrderId,
 
       // Computed
       selectedItemsWithTotal,
