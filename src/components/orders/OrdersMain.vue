@@ -26,22 +26,22 @@
         <Column field="id" header="Order ID"></Column>
         <Column header="Data Status">
           <template #body="storedData">
-            <span style="display: flex; align-items: center; gap: 0.5rem">
-              <!-- Display the status text -->
+            <span
+              :class="{
+                'status-pending': storedData.data.sendStatus === 'pending',
+              }"
+            >
+              <i
+                v-if="storedData.data.sendStatus === 'pending'"
+                class="pi pi-exclamation-triangle"
+              />
               {{
                 storedData.data.sendStatus.charAt(0).toUpperCase() +
                 storedData.data.sendStatus.slice(1)
               }}
-              <!-- Conditionally render the icon -->
-              <i
-                v-if="storedData.data.sendStatus === 'pending'"
-                class="pi pi-exclamation-triangle"
-                style="color: #ffc107"
-              />
             </span>
           </template>
         </Column>
-
         <Column header="Grand Total">
           <template #body="storedData">฿ {{ storedData.data.total }}</template>
         </Column>
@@ -273,6 +273,13 @@ form {
 /* Green underline for "Success" */
 .status-underline-success {
   text-decoration-color: #4caf50; /* Green underline */
+}
+
+.status-pending {
+  color: #ffc107; /* Yellow for Pending */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 </style>
 
