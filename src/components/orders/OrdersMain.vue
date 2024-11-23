@@ -38,9 +38,19 @@
         </Column>
         <Column field="timestampUTC7" header="Timestamp"></Column>
         <Column header="Order Status">
-          <!-- Make the orderStatus tp the uppercase -->
+          <!-- Add conditional underline style based on the order status -->
           <template #body="storedData">
-            {{ getCurrentStatusLabel(storedData.data.orderStatus) }}
+            <span
+              :class="{
+                'status-underline-cancelled':
+                  storedData.data.orderStatus === 'cancelled',
+                'status-underline-success':
+                  storedData.data.orderStatus === 'success',
+                'status-underline': true,
+              }"
+            >
+              {{ getCurrentStatusLabel(storedData.data.orderStatus) }}
+            </span>
           </template>
         </Column>
         <!-- Action Column -->
