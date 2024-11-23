@@ -54,6 +54,7 @@ import Row from "primevue/row"; // optional
 import Dialog from "primevue/dialog";
 import Select from "primevue/select";
 import DatePicker from "primevue/datepicker";
+import SelectButton from "primevue/selectbutton";
 
 // import Firebase
 import "./firebase/init.js";
@@ -84,6 +85,7 @@ app.component("Row", Row);
 app.component("Dialog", Dialog);
 app.component("Select", Select);
 app.component("DatePicker", DatePicker);
+app.component("SelectButton", SelectButton);
 
 // Pinia
 const pinia = createPinia();

@@ -13,7 +13,6 @@ import OrdersMain from "@/components/orders/OrdersMain.vue";
   /* View port for the Main */
   height: 82vh;
 
-  width: 100%;
   overflow: hidden; /* Prevent scroll if content overflows */
 
   /* add border */
