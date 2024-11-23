@@ -13,32 +13,13 @@
         <DatePicker
           v-model="selectedDateRaw"
           showButtonBar
+          show-icon
           appendTo="body"
           class="date-picker"
-          dateFormat="yy-mm-dd"
+          dateFormat="yy / mm / dd"
           placeholder="Select a date"
           ref="datePicker"
-        >
-          <!-- Custom Header with Close Button -->
-          <template #header>
-            <div class="custom-header">
-              <span>Select a Date</span>
-              <button class="close-button" @click="closeCalendar">✖</button>
-            </div>
-          </template>
-
-          <!-- Custom Button Bar -->
-          <template #buttonbar>
-            <div class="custom-buttonbar">
-              <Button label="Today" class="p-button-text" @click="setToday" />
-              <Button
-                label="Close"
-                class="p-button-text"
-                @click="closeCalendar"
-              />
-            </div>
-          </template>
-        </DatePicker>
+        />
       </div>
 
       <!-- Orders Table -->
@@ -48,11 +29,18 @@
         scrollable
         scrollHeight="65vh"
         stripedRows
+        style="height: 65vh"
       >
         <template #empty>
-          <tr>
+          <tr
+            style="display: flex; justify-content: center; align-items: center"
+          >
             <td colspan="5" style="text-align: center; color: gray">
-              🚫 No items to display.
+              🚫 No orders found for the selected date
+              <span style="text-decoration: underline; font-weight: bold"
+                >or</span
+              >
+              No orders found.
             </td>
           </tr>
         </template>
@@ -147,24 +135,6 @@ onMounted(() => {
     selectedDate.value
   );
 });
-
-// Function to close the DatePicker popup
-const closeCalendar = () => {
-  const calendarPanel = document.querySelector(".p-datepicker");
-  if (calendarPanel) {
-    calendarPanel.classList.remove("p-connected-overlay-visible");
-    calendarPanel.style.display = "none"; // Hide calendar popup
-  }
-};
-
-// Set today's date in the DatePicker
-const setToday = () => {
-  const today = new Date();
-  selectedDateRaw.value = today;
-  selectedDate.value = `${today.getFullYear()}-${String(
-    today.getMonth() + 1
-  ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-};
 
 // Filter orders based on the selected date
 const filteredOrders = computed(() => {
