@@ -16,7 +16,14 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { useMenuStore } from "@/stores/useMenuStore";
 import { db } from "@/firebase/init.js";
-import { collection, addDoc } from "firebase/firestore";
+import {
+  doc,
+  collection,
+  setDoc,
+  getDoc,
+  updateDoc,
+  increment,
+} from "firebase/firestore";
 
 const menuStore = useMenuStore();
 const isOnline = ref(navigator.onLine); // Reactive network status
@@ -25,6 +32,15 @@ let syncInterval;
 // Listen for network status changes
 function updateNetworkStatus() {
   isOnline.value = navigator.onLine;
+}
+
+// Helper function to extract date in 'YYYY-MM-DD' format from the timestamp
+function extractDateFromTimestamp(timestampUTC7) {
+  const [month, day, year] = timestampUTC7.split(",")[0].split("/");
+  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(
+    2,
+    "0"
+  )}`;
 }
 
 // Sync pending orders with Firestore
@@ -40,13 +56,70 @@ async function syncOrders() {
 
   for (const order of pendingOrders) {
     try {
-      // Send order to Firestore
-      await addDoc(collection(db, "orders"), {
-        ...order,
-        sendStatus: "sent",
+      const shopId = "shop123"; // Use your shop ID here
+      const dateString = extractDateFromTimestamp(order.timestampUTC7);
+
+      // **Create a reference to the shop document**
+      const shopDocRef = doc(db, "orders", shopId);
+
+      // Ensure the shop document exists
+      const shopDocSnap = await getDoc(shopDocRef);
+      if (!shopDocSnap.exists()) {
+        await setDoc(shopDocRef, {
+          shopId: shopId,
+          shopName: "Your Shop Name",
+          createdAt: new Date().toLocaleString("en-US", {
+            timeZone: "Asia/Bangkok",
+          }),
+        });
+      }
+
+      // **Create a reference to the date document under shopOrders**
+      const dateDocRef = doc(
+        collection(db, "orders", shopId, "shopOrders"),
+        dateString
+      );
+
+      // Ensure the date document exists
+      const dateDocSnap = await getDoc(dateDocRef);
+      if (!dateDocSnap.exists()) {
+        await setDoc(dateDocRef, {
+          date: dateString,
+          createdAt: new Date().toLocaleString("en-US", {
+            timeZone: "Asia/Bangkok",
+          }),
+          totalOrder: 0,
+          grandTotal: 0,
+          lastUpdate: new Date().toLocaleString("en-US", {
+            timeZone: "Asia/Bangkok",
+          }),
+        });
+      }
+
+      // Update the date document with totalOrder, grandTotal, lastUpdate
+      await updateDoc(dateDocRef, {
+        totalOrder: increment(1),
+        grandTotal: increment(order.total),
+        lastUpdate: new Date().toLocaleString("en-US", {
+          timeZone: "Asia/Bangkok",
+        }),
       });
+
+      // **Create a reference to the order document under the date document**
+      const orderRef = doc(
+        collection(db, "orders", shopId, "shopOrders", dateString, "orders"),
+        order.id
+      );
+
+      // Send order to Firestore with specified document ID
+      await setDoc(orderRef, {
+        ...order,
+        sendStatus: "sent", // Update status to sent
+      });
+
       // Update order status in the store
       menuStore.updateOrderStatus(order.id, "sent");
+      console.log(`Order ${order.id} sent successfully.`);
     } catch (error) {
       console.error("Error sending order:", error);
       // Optionally update status to 'failed'
