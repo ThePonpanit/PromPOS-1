@@ -118,12 +118,12 @@ async function syncOrders() {
       });
 
       // Update order status in the store
-      menuStore.updateOrderStatus(order.id, "sent");
+      menuStore.updateOrderSendStatus(order.id, "sent");
       console.log(`Order ${order.id} sent successfully.`);
     } catch (error) {
       console.error("Error sending order:", error);
       // Optionally update status to 'failed'
-      menuStore.updateOrderStatus(order.id, "failed");
+      menuStore.updateOrderSendStatus(order.id, "failed");
     }
   }
 }

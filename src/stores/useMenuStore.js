@@ -179,7 +179,7 @@ export const useMenuStore = defineStore(
         });
 
         // Update order status in the store
-        updateOrderStatus(order.id, "sent");
+        updateOrderSendStatus(order.id, "sent");
         console.log(`Order ${order.id} sent successfully.`);
       } catch (error) {
         console.error("Error sending order:", error);
@@ -188,7 +188,7 @@ export const useMenuStore = defineStore(
     }
 
     // Update order status and ensure DataTable reflects changes
-    function updateOrderStatus(orderId, newStatus) {
+    function updateOrderSendStatus(orderId, newStatus) {
       const index = orders.value.findIndex((o) => o.id === orderId);
       if (index !== -1) {
         // Replace the object with a new one to trigger reactivity
@@ -202,6 +202,63 @@ export const useMenuStore = defineStore(
           "menuStore",
           JSON.stringify({ orders: orders.value })
         );
+      }
+    }
+
+    // Update order status in Firestore
+    async function updateOrderStatusInFirestore(orderId, newOrderStatus) {
+      // Find the order in the local store
+      const index = orders.value.findIndex((o) => o.id === orderId);
+      if (index === -1) {
+        console.error(`Order ${orderId} not found in local store.`);
+        return;
+      }
+
+      // Update the order status locally
+      orders.value[index] = {
+        ...orders.value[index],
+        orderStatus: newOrderStatus,
+      };
+      orders.value = [...orders.value]; // Ensure reactivity
+
+      // Persist the updated orders back to localStorage
+      localStorage.setItem(
+        "menuStore",
+        JSON.stringify({ orders: orders.value })
+      );
+
+      // Extract the dateString from the order's timestamp
+      const orderDate = new Date(orders.value[index].timestamp);
+      const year = orderDate.getFullYear();
+      const month = String(orderDate.getMonth() + 1).padStart(2, "0");
+      const day = String(orderDate.getDate()).padStart(2, "0");
+      const dateString = `${year}-${month}-${day}`; // 'YYYY-MM-DD'
+
+      // Define your shop ID
+      const shopId = "shop123"; // Replace with your unique shop ID
+
+      try {
+        // Create a reference to the order document in Firestore
+        const orderRef = doc(
+          db,
+          "orders",
+          shopId,
+          "shopOrders",
+          dateString,
+          "orders",
+          orderId
+        );
+
+        // Update the orderStatus in Firestore
+        await updateDoc(orderRef, {
+          orderStatus: newOrderStatus,
+        });
+
+        console.log(
+          `Order ${orderId} status updated to '${newOrderStatus}' in Firestore.`
+        );
+      } catch (error) {
+        console.error(`Error updating order ${orderId} in Firestore:`, error);
       }
     }
 
@@ -242,7 +299,8 @@ export const useMenuStore = defineStore(
       removeItemCompletely,
       removeAllItems,
       checkout,
-      updateOrderStatus,
+      updateOrderSendStatus,
+      updateOrderStatusInFirestore,
 
       // Computed
       selectedItemsWithTotal,

@@ -148,11 +148,13 @@
             @click="isDialogVisible = false"
             text
             severity="danger"
+            :disabled="isLoading"
           />
           <Button
             label="Save"
             type="submit"
             class="p-button-success save-button"
+            :loading="isLoading"
           />
         </div>
       </form>
@@ -175,7 +177,7 @@ const props = defineProps({
 const menuStore = useMenuStore();
 const orders = computed(() => menuStore.orders);
 
-console.log("Orders", orders.value);
+var isLoading = ref(false);
 
 // Filter orders based on the selected date
 const filteredOrders = computed(() => {
@@ -196,8 +198,6 @@ const filteredOrders = computed(() => {
     return orderDateStr === props.selectedDate;
   });
 });
-
-console.log("Filtered Orders", filteredOrders.value);
 
 // Dialog and Selected Order
 const isDialogVisible = ref(false);
@@ -231,20 +231,29 @@ const getCurrentStatusLabel = (statusValue) => {
 };
 
 // Save changes to the order
-const updateOrderStatus = () => {
+const updateOrderStatus = async () => {
   if (!selectedOrder.value || !selectedStatus.value) return;
 
-  // Update the `orderStatus` with the selected status value
-  selectedOrder.value.orderStatus = selectedStatus.value.value;
+  isLoading.value = true;
 
-  // Find the order in the list and update it
-  const index = orders.value.findIndex((o) => o.id === selectedOrder.value.id);
-  if (index !== -1) {
-    orders.value[index] = { ...selectedOrder.value };
+  try {
+    // Get the new order status
+    const newOrderStatus = selectedStatus.value.value;
 
-    console.log(`Order ${selectedOrder.value.id} updated successfully.`);
+    // Call the store function to update the order in local store and Firestore
+    await menuStore.updateOrderStatusInFirestore(
+      selectedOrder.value.id,
+      newOrderStatus
+    );
+
+    isLoading.value = false;
+
+    // Close the dialog after the Firestore update is complete
+    isDialogVisible.value = false;
+  } catch (error) {
+    console.error("Failed to update the order status:", error);
+    // Optionally, handle the error (e.g., show a notification to the user)
   }
-  isDialogVisible.value = false;
 };
 </script>
 

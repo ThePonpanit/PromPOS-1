@@ -24,7 +24,14 @@
           </div>
         </div>
         <p style="margin-top: 1rem; margin-left: 1rem; font-size: large">
-          Show all the orders from different sources.
+          Show all the orders from
+          <strong style="text-decoration: underline">{{
+            selectedOption
+          }}</strong>
+          . Showing orders for date:
+          <strong style="text-decoration: underline">{{
+            selectedDateFormatted
+          }}</strong>
         </p>
       </template>
       <template #content>
@@ -52,6 +59,7 @@ const selectedOption = ref("Persisted Orders"); // Default selection
 // DatePicker values
 const selectedDateRaw = ref(null); // Raw date object from DatePicker
 const selectedDate = ref(null); // Normalized date (yyyy-mm-dd)
+const selectedDateFormatted = ref(null); // Formatted date (dd/mm/yyyy)
 
 // Watch for changes in selectedDateRaw and normalize it
 watch(selectedDateRaw, (newValue) => {
@@ -60,8 +68,16 @@ watch(selectedDateRaw, (newValue) => {
     selectedDate.value = `${newValue.getFullYear()}-${String(
       newValue.getMonth() + 1
     ).padStart(2, "0")}-${String(newValue.getDate()).padStart(2, "0")}`;
+
+    // Format to mmmm dd, yyyy
+    selectedDateFormatted.value = `${newValue.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    })}`;
   } else {
     selectedDate.value = null; // Reset if cleared
+    selectedDateFormatted.value = null;
   }
 });
 
