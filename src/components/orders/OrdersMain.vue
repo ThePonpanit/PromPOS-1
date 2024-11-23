@@ -7,7 +7,23 @@
       <template #subtitle style="display: flex; flex-direction: column">
         <div style="display: flex; gap: 2rem">
           <!-- Toggle Selection Button -->
-          <SelectButton v-model="selectedOption" :options="options" />
+          <ButtonGroup class="button-group-styles">
+            <Button
+              v-for="option in options"
+              :key="option.label"
+              :label="option.label"
+              :icon="option.icon"
+              :class="{
+                'custom-selected-button': selectedOption === option.label,
+              }"
+              @click="handleButtonClick(option.label)"
+              :severity="
+                selectedOption === option.label ? 'success' : 'secondary'
+              "
+              raised
+            />
+          </ButtonGroup>
+
           <Divider layout="vertical" />
           <!-- Date Picker for Filtering -->
           <div class="filter-container">
@@ -48,12 +64,16 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import PersistedOrdersData from "./PersistedOrdersData.vue";
 import OrdersFromFirestore from "./OrdersFromFirestore.vue";
 
-// Toggle options
-const options = ref(["Firestore Orders", "Persisted Orders"]);
+// Toggle options with icons
+const options = ref([
+  { icon: "pi pi-cloud", label: "Firestore Orders" },
+  { icon: "pi pi-save", label: "Persisted Orders" },
+]);
+
 const selectedOption = ref("Firestore Orders"); // Default selection
 
 // DatePicker values
@@ -82,7 +102,6 @@ watch(selectedDateRaw, (newValue) => {
 });
 
 // Set default date on component mount
-import { onMounted } from "vue";
 onMounted(() => {
   const today = new Date();
   selectedDateRaw.value = today; // Set today's date in DatePicker
@@ -90,6 +109,11 @@ onMounted(() => {
     today.getMonth() + 1
   ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 });
+
+// Handle button click to set selected option
+const handleButtonClick = (label) => {
+  selectedOption.value = label; // Update the selected option
+};
 </script>
 
 <style scoped>
@@ -98,5 +122,10 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
+}
+
+.button-group-styles {
+  border: 3px solid var(--border-color);
+  border-radius: 10px;
 }
 </style>
