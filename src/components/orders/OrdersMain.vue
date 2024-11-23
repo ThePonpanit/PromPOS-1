@@ -7,11 +7,47 @@
       Show all the Persisted Orders that have been saved to local storage.
     </template>
     <template #content>
+      <!-- Date Picker for filtering -->
+      <div class="filter-container">
+        <span>Filter by Date Range:</span>
+        <DatePicker
+          v-model="selectedDateRange"
+          selectionMode="range"
+          appendTo="body"
+          class="date-picker"
+          dateFormat="yy-mm-dd"
+          placeholder="Select date range"
+          ref="datePicker"
+        >
+          <!-- Custom Header with Close Button -->
+          <template #header>
+            <div class="custom-header">
+              <span>Select Date Range</span>
+              <button class="close-button" @click="closeCalendar">✖</button>
+            </div>
+          </template>
+
+          <!-- Custom Button Bar -->
+          <template #buttonbar>
+            <div class="custom-buttonbar">
+              <Button label="Today" class="p-button-text" @click="setToday" />
+              <Button
+                label="Close"
+                class="p-button-text"
+                @click="closeCalendar"
+              />
+            </div>
+          </template>
+        </DatePicker>
+      </div>
+
+      <!-- Orders Table -->
       <DataTable
-        :value="orders"
+        :value="filteredOrders"
         responsiveLayout="scroll"
         scrollable
         scrollHeight="65vh"
+        style="height: 65vh"
         stripedRows
       >
         <template #empty>
@@ -183,32 +219,88 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-
+import { ref, computed, watch } from "vue";
 import { useMenuStore } from "@/stores/useMenuStore";
 
+// Use Menu Store
 const menuStore = useMenuStore();
 const orders = computed(() => menuStore.orders);
 
-const isDialogVisible = ref(false); // Controls dialog visibility
-const selectedOrder = ref(null); // Holds the currently selected order for editing
-const selectedStatus = ref(null); // Holds the currently selected status in the dropdown
+// Date range selected from the DatePicker
+const selectedDateRange = ref([]); // Holds start and end dates
+
+// Function to close the calendar popup
+const closeDatePicker = () => {
+  const calendarPanel = document.querySelector(".p-datepicker");
+  if (calendarPanel) {
+    calendarPanel.classList.remove("p-connected-overlay-visible"); // Remove visibility class
+    calendarPanel.style.display = "none"; // Hide the panel
+  }
+};
+
+// Set today as the selected range
+const setToday = () => {
+  const today = new Date();
+  selectedDateRange.value = [today, today]; // Set start and end to today
+};
+
+// Normalize date range into start and end for filtering
+const filteredOrders = computed(() => {
+  if (!selectedDateRange.value || selectedDateRange.value.length !== 2) {
+    return orders.value; // Return all orders if no range is selected
+  }
+
+  const [startDateRaw, endDateRaw] = selectedDateRange.value;
+
+  // Normalize start and end to `yyyy-mm-dd`
+  const startDate = new Date(startDateRaw);
+  const endDate = new Date(endDateRaw);
+  const normalizedStartDate = `${startDate.getFullYear()}-${String(
+    startDate.getMonth() + 1
+  ).padStart(2, "0")}-${String(startDate.getDate()).padStart(2, "0")}`;
+  const normalizedEndDate = `${endDate.getFullYear()}-${String(
+    endDate.getMonth() + 1
+  ).padStart(2, "0")}-${String(endDate.getDate()).padStart(2, "0")}`;
+
+  console.log(
+    `Filtering Orders: From ${normalizedStartDate} To ${normalizedEndDate}`
+  );
+
+  // Filter orders within the selected range
+  return orders.value.filter((order) => {
+    if (!order.timestampUTC7) {
+      return false;
+    }
+
+    const orderDate = new Date(order.timestampUTC7);
+    const normalizedOrderDate = `${orderDate.getFullYear()}-${String(
+      orderDate.getMonth() + 1
+    ).padStart(2, "0")}-${String(orderDate.getDate()).padStart(2, "0")}`;
+
+    return (
+      normalizedOrderDate >= normalizedStartDate &&
+      normalizedOrderDate <= normalizedEndDate
+    );
+  });
+});
+// Dialog and Selected Order
+const isDialogVisible = ref(false);
+const selectedOrder = ref(null);
+const selectedStatus = ref(null);
 
 // Options for the PrimeVue Select
 const statusOptions = ref([
   { label: "Cancelled", value: "cancelled" },
-  { label: "Success", value: "success" }, // Add this line
+  { label: "Success", value: "success" },
 ]);
 
 // Open the dialog and set the selected order
 const openDialog = (storedData) => {
-  selectedOrder.value = { ...storedData.data }; // Extract the data property
-  console.log("Selected Order Status:", selectedOrder.value.orderStatus); // Debugging log
+  selectedOrder.value = { ...storedData.data };
   selectedStatus.value = statusOptions.value.find(
     (option) => option.value === selectedOrder.value.orderStatus
-  ); // Map orderStatus to a statusOptions item
-  console.log("Mapped Selected Status:", selectedStatus.value); // Debugging log
-  isDialogVisible.value = true; // Open the dialog
+  );
+  isDialogVisible.value = true;
 };
 
 // Get the display label for the current status
@@ -216,7 +308,7 @@ const getCurrentStatusLabel = (statusValue) => {
   const option = statusOptions.value.find(
     (option) => option.value === statusValue
   );
-  return option?.label; // Return the label, or undefined if not found
+  return option?.label;
 };
 
 // Save changes to the order
@@ -233,50 +325,25 @@ const updateOrderStatus = () => {
 
     // Optionally, persist the updated orders back to localStorage
     localStorage.setItem("menuStore", JSON.stringify({ orders: orders.value }));
-
-    console.log(`Order ${selectedOrder.value.id} updated successfully.`);
   }
-
-  isDialogVisible.value = false; // Close the dialog
+  isDialogVisible.value = false;
 };
 </script>
 
 <style scoped>
-.main-card {
-  height: 100%;
-}
-
-form {
+.filter-container {
+  margin-bottom: 1rem;
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.dialog-buttons {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 1rem;
-}
-
-/* Base style for underline */
-.status-underline {
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  margin-left: 1rem;
-}
-
-/* Red underline for "Cancelled" */
-.status-underline-cancelled {
-  text-decoration-color: #f44336; /* Red underline */
-}
-
-/* Green underline for "Success" */
-.status-underline-success {
-  text-decoration-color: #4caf50; /* Green underline */
+.date-picker {
+  width: fit-content;
 }
 
 .status-pending {
-  color: #ffc107; /* Yellow for Pending */
+  color: #ffc107;
   display: flex;
   align-items: center;
   gap: 0.5rem;
