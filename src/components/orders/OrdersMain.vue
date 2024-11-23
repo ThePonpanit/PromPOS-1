@@ -27,7 +27,7 @@
           <Divider layout="vertical" />
           <!-- Date Picker for Filtering -->
           <div class="filter-container">
-            <span>Filter by Date:</span>
+            <span>Filter by Date Range:</span>
             <DatePicker
               v-model="selectedDateRaw"
               showButtonBar
