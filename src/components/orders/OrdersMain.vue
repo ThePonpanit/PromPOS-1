@@ -36,11 +36,11 @@
       </template>
       <template #content>
         <!-- Conditional Rendering of Children -->
-        <div v-if="selectedOption === 'Persisted Orders'">
-          <PersistedOrdersData :selectedDate="selectedDate" />
-        </div>
-        <div v-else-if="selectedOption === 'Firestore Orders'">
+        <div v-if="selectedOption === 'Firestore Orders'">
           <OrdersFromFirestore :selectedDate="selectedDate" />
+        </div>
+        <div v-else-if="selectedOption === 'Persisted Orders'">
+          <PersistedOrdersData :selectedDate="selectedDate" />
         </div>
       </template>
     </Card>
@@ -53,8 +53,8 @@ import PersistedOrdersData from "./PersistedOrdersData.vue";
 import OrdersFromFirestore from "./OrdersFromFirestore.vue";
 
 // Toggle options
-const options = ref(["Persisted Orders", "Firestore Orders"]);
-const selectedOption = ref("Persisted Orders"); // Default selection
+const options = ref(["Firestore Orders", "Persisted Orders"]);
+const selectedOption = ref("Firestore Orders"); // Default selection
 
 // DatePicker values
 const selectedDateRaw = ref(null); // Raw date object from DatePicker

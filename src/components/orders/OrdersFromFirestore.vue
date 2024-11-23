@@ -15,37 +15,39 @@
         </td>
       </tr>
     </template>
+
     <Column field="id" header="Order ID"></Column>
+
     <Column header="Data Status">
-      <template #body="storedData">
-        <span
-          :class="{ 'status-pending': storedData.sendStatus === 'pending' }"
-        >
+      <template #body="{ data }">
+        <span :class="{ 'status-pending': data.sendStatus === 'pending' }">
           <i
-            v-if="storedData.sendStatus === 'pending'"
+            v-if="data.sendStatus === 'pending'"
             class="pi pi-exclamation-triangle"
           ></i>
           {{
-            (storedData.sendStatus ?? "unknown").charAt(0).toUpperCase() +
-            (storedData.sendStatus ?? "unknown").slice(1)
+            (data.sendStatus ?? "unknown").charAt(0).toUpperCase() +
+            (data.sendStatus ?? "unknown").slice(1)
           }}
         </span>
       </template>
     </Column>
+
     <Column header="Grand Total">
-      <template #body="storedData">฿ {{ storedData.total ?? 0 }}</template>
+      <template #body="{ data }">฿ {{ data.total ?? 0 }}</template>
     </Column>
+
     <Column field="timestampUTC7" header="Timestamp"></Column>
+
     <Column header="Order Status">
-      <template #body="storedData">
+      <template #body="{ data }">
         <span
           :class="{
-            'status-underline-cancelled':
-              storedData.orderStatus === 'cancelled',
-            'status-underline-success': storedData.orderStatus === 'success',
+            'status-underline-cancelled': data.orderStatus === 'cancelled',
+            'status-underline-success': data.orderStatus === 'success',
           }"
         >
-          {{ getCurrentStatusLabel(storedData.orderStatus ?? "unknown") }}
+          {{ getCurrentStatusLabel(data.orderStatus ?? "unknown") }}
         </span>
       </template>
     </Column>
@@ -57,13 +59,25 @@ import { ref, watch, onMounted } from "vue";
 import { db } from "@/firebase/init.js"; // Firestore instance
 import { collection, getDocs } from "firebase/firestore";
 
+// Accept selectedDate as a prop
+const props = defineProps({
+  selectedDate: {
+    type: String,
+    default: null,
+  },
+});
+
 // Firestore orders
 const orders = ref([]); // Holds the fetched orders
-const selectedDate = ref(new Date().toISOString().split("T")[0]); // Default to today's date
 const shopId = "shop123"; // Replace with your shop ID
 
 // Fetch orders based on the selected date
 const fetchOrdersByDate = async (date) => {
+  if (!date) {
+    orders.value = []; // Clear orders if no date is selected
+    return;
+  }
+
   try {
     const datePath = `${date}`; // e.g., "2024-11-23"
     const ordersRef = collection(
@@ -89,15 +103,18 @@ const fetchOrdersByDate = async (date) => {
   }
 };
 
-// Watch selectedDate and fetch orders when it changes
-watch(selectedDate, (newDate) => {
-  console.log("Fetching orders for date:", newDate);
-  fetchOrdersByDate(newDate);
-});
+// Watch props.selectedDate and fetch orders when it changes
+watch(
+  () => props.selectedDate,
+  (newDate) => {
+    console.log("Fetching orders for date:", newDate);
+    fetchOrdersByDate(newDate);
+  }
+);
 
-// Fetch orders for the default date on component mount
+// Fetch orders for the selected date on component mount
 onMounted(() => {
-  fetchOrdersByDate(selectedDate.value);
+  fetchOrdersByDate(props.selectedDate);
 });
 
 // Get display label for order status

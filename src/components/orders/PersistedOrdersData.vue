@@ -298,6 +298,18 @@ const isSaveDisabled = computed(() => {
   color: #fff;
   cursor: not-allowed;
 }
+
+.status-underline-cancelled {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: #f44336; /* Red underline */
+}
+
+.status-underline-success {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: #4caf50; /* Green underline */
+}
 </style>
 
 <style>
