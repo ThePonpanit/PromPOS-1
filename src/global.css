@@ -120,3 +120,8 @@ html,
   display: flex;
   justify-content: center;
 }
+
+/* add hover effect to the table row */
+.p-datatable-tbody > tr:hover {
+  background-color: var(--border-color) !important;
+}
