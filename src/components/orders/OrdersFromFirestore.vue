@@ -7,9 +7,19 @@
     stripedRows
     scrollHeight="55vh"
     style="height: 55vh"
+    :class="{ loading: isLoading }"
   >
     <template #empty>
-      <tr style="display: flex; justify-content: center; align-items: center">
+      <!-- Loading Spinner -->
+      <div v-if="isLoading" class="loading-container">
+        <i class="pi pi-spin pi-spinner loading-icon"></i>
+        <p>Loading orders...</p>
+      </div>
+
+      <tr
+        v-else
+        style="display: flex; justify-content: center; align-items: center"
+      >
         <td colspan="7" style="text-align: center; color: gray">
           🚫 No orders found for the selected date.
         </td>
@@ -142,7 +152,7 @@
       <Divider />
       <!-- Order Items -->
       <div class="order-items">
-        <h4>Items:</h4>
+        <h4>Items List:</h4>
         <table class="order-items-table">
           <thead style="border-bottom: 1px solid var(--border-color)">
             <tr>
@@ -156,7 +166,7 @@
               <td>{{ item.name }}</td>
               <td>{{ item.quantity }}</td>
               <td class="item-price mono-fonts">
-                {{ formatPrice(item.price) }}
+                {{ formatPrice(item.price) * item.quantity || 0 }}
               </td>
             </tr>
           </tbody>
@@ -191,6 +201,9 @@ const props = defineProps({
 const orders = ref([]); // Holds the fetched orders
 const shopId = "shop123"; // Replace with your shop ID
 
+// const add loading state for the table data fetch
+const isLoading = ref(false);
+
 // Dialog and Selected Order
 const isDialogVisible = ref(false);
 const selectedOrder = ref(null);
@@ -224,9 +237,14 @@ function getDatesBetween(startDateStr, endDateStr) {
 // Fetch orders based on the selected date range
 const fetchOrdersByDateRange = async (startDateStr, endDateStr) => {
   if (!startDateStr || !endDateStr) {
-    orders.value = []; // Clear orders if no date range is selected
+    orders.value = [];
     return;
   }
+
+  isLoading.value = true; // Start loading
+
+  // Clear the orders array before fetching new data
+  orders.value = [];
 
   try {
     const dateList = getDatesBetween(startDateStr, endDateStr);
@@ -256,11 +274,10 @@ const fetchOrdersByDateRange = async (startDateStr, endDateStr) => {
 
     orders.value = allOrders;
   } catch (error) {
-    console.error(
-      `Error fetching orders for date range ${startDateStr} - ${endDateStr}:`,
-      error
-    );
-    orders.value = []; // Clear on error
+    console.error("Error fetching orders:", error);
+    orders.value = [];
+  } finally {
+    isLoading.value = false; // Stop loading
   }
 };
 
@@ -423,5 +440,29 @@ const formatPrice = (price) => {
 .item-price {
   font-weight: bold;
   color: #4caf50; /* Match grand total color */
+}
+
+/* Loading Styles */
+.loading-container {
+  margin-top: 5vh;
+  margin-bottom: 3vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: gray;
+}
+
+.loading-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.status-pending {
+  color: #ffc107;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 </style>

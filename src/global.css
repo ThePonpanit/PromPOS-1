@@ -129,3 +129,9 @@ html,
 .mono-fonts {
   font-family: "Roboto Mono", monospace, sans-serif;
 }
+
+/* Disable hover effect when loading */
+.loading .p-datatable-tbody > tr:hover {
+  background-color: transparent !important;
+  cursor: not-allowed; /* Optional: Change cursor to indicate no interaction */
+}

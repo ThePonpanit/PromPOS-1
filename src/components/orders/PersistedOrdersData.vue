@@ -142,7 +142,7 @@
       <Divider />
       <!-- Order Items -->
       <div class="order-items">
-        <h4>Items:</h4>
+        <h4>Items List:</h4>
         <ul>
           <li
             v-for="item in selectedOrder?.items || []"
@@ -156,7 +156,7 @@
               x {{ item.name }}
             </span>
             <span class="item-price mono-fonts">{{
-              formatPrice(item.price)
+              formatPrice(item.price * item.quantity)
             }}</span>
           </li>
         </ul>
@@ -179,7 +179,8 @@
           :options="statusOptions"
           optionLabel="label"
           placeholder="Select a Status"
-          class="w-full status-select"
+          class="status-select"
+          style="width: 9vw; min-width: fit-content; margin-left: 0.5rem"
         />
         <div class="dialog-buttons">
           <Button
