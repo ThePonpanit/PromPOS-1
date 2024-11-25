@@ -68,8 +68,11 @@
               }"
             />
           </div>
+          <div class="mono-fonts change-display-amount">
+            <p v-if="change === 0">No Change</p>
+            <p v-else>Change: ฿{{ formatPrice(change) }}</p>
+          </div>
         </div>
-        <p>Change: ฿{{ formatPrice(change) }}</p>
       </div>
     </div>
 
@@ -82,18 +85,31 @@
 
     <!-- Dialog footer with Finish and Cancel buttons -->
     <template #footer>
-      <Button
-        label="Cancel"
-        icon="pi pi-times"
-        @click="onCancel"
-        class="p-button-text"
-      />
-      <Button
-        label="Finish"
-        icon="pi pi-check"
-        @click="onFinish"
-        :disabled="!canFinish"
-      />
+      <div style="width: 100%">
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5rem;
+          "
+        >
+          <Button
+            label="Cancel"
+            icon="pi pi-times"
+            @click="onCancel"
+            class="p-button-text"
+            severity="danger"
+          />
+          <Button
+            label="Finish"
+            icon="pi pi-check"
+            @click="onFinish"
+            :disabled="!canFinish"
+            :outlined="!canFinish"
+          />
+        </div>
+      </div>
     </template>
   </Dialog>
 </template>
@@ -191,6 +207,12 @@ function resetDialog() {
 }
 </script>
 
+<style>
+.payment-dialog {
+  width: 30rem;
+}
+</style>
+
 <style scoped>
 .checkout-button {
   width: 100%;
@@ -232,7 +254,9 @@ function resetDialog() {
 
 /* Number Pad Styles */
 .number-pad {
-  margin-top: 0.5rem;
+  border: 1px solid var(--border-color);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
 }
 
 .amount-display {
@@ -261,5 +285,10 @@ function resetDialog() {
 .del-button {
   background-color: var(--red-500);
   color: #fff;
+}
+
+.change-display-amount > p {
+  text-align: center;
+  font-size: 1.5rem;
 }
 </style>
