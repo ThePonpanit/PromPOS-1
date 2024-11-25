@@ -89,7 +89,7 @@ export const useMenuStore = defineStore(
     }
 
     // **Checkout action**
-    async function checkout() {
+    async function checkout(paymentDetails) {
       if (selectedItems.value.length === 0) return;
 
       const isOnline = navigator.onLine;
@@ -163,6 +163,7 @@ export const useMenuStore = defineStore(
         timestamp: new Date().toISOString(),
         items: selectedItems.value.map((item) => ({ ...item })), // Deep copy items
         orderStatus: "success",
+        paymentDetails: paymentDetails, // Add payment details here
       };
 
       orders.value.push(order);

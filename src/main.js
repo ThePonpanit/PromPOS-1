@@ -56,6 +56,9 @@ import Select from "primevue/select";
 import DatePicker from "primevue/datepicker";
 import SelectButton from "primevue/selectbutton";
 import ButtonGroup from "primevue/buttongroup";
+import RadioButton from "primevue/radiobutton";
+import InputNumber from "primevue/inputnumber";
+import InputText from "primevue/inputtext";
 
 // import Firebase
 import "./firebase/init.js";
@@ -88,6 +91,9 @@ app.component("Select", Select);
 app.component("DatePicker", DatePicker);
 app.component("SelectButton", SelectButton);
 app.component("ButtonGroup", ButtonGroup);
+app.component("RadioButton", RadioButton);
+app.component("InputNumber", InputNumber);
+app.component("InputText", InputText);
 
 // Pinia
 const pinia = createPinia();
