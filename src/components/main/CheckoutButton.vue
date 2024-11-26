@@ -29,7 +29,10 @@
           value="cash"
           v-model="paymentMethod"
         />
-        <label for="payment1">Cash</label>
+        <label for="payment1">
+          <span> Cash </span>
+          <i class="material-icons">payments</i>
+        </label>
       </div>
       <div class="field-radiobutton">
         <RadioButton
@@ -38,7 +41,10 @@
           value="qr"
           v-model="paymentMethod"
         />
-        <label for="payment2">QR Payment</label>
+        <label for="payment2">
+          <span> QR Payment </span>
+          <i class="material-icons">qr_code_scanner</i>
+        </label>
       </div>
     </div>
 
@@ -90,7 +96,7 @@
           />
           <img :src="qrCodeDataUrl" alt="QR Code" class="qr-code-image" />
           <p class="mono-fonts" style="font-weight: 700">
-            Total Amount: ฿{{ formatPrice(menuStore.total) }}
+            *Total Amount: ฿{{ formatPrice(menuStore.total) }}*
           </p>
         </template>
       </Card>
@@ -284,7 +290,11 @@ function resetDialog() {
 }
 
 .payment-dialog .field-radiobutton label {
-  margin-left: 0.5rem;
+  margin-left: 0.65rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .cash-payment-section,

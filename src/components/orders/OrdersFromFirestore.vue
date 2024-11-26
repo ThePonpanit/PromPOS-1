@@ -159,6 +159,46 @@
             ฿ {{ formatPrice(selectedOrder?.total) || "N/A" }}
           </span>
         </p>
+
+        <!-- Payment Method -->
+        <p>
+          <strong>Payment Method:</strong>
+          <span style="margin-left: 1rem">
+            <span v-if="selectedOrder.paymentDetails.method === 'cash'"
+              >Cash</span
+            >
+            <span v-else-if="selectedOrder.paymentDetails.method === 'qr'">
+              Promptpay QR
+            </span>
+            <span v-else> N/A </span>
+          </span>
+        </p>
+
+        <div v-if="selectedOrder.paymentDetails.method === 'cash'">
+          <!-- Payment Details -->
+          <p>
+            <strong>Amount Received:</strong>
+            <span style="margin-left: 1rem">
+              ฿ {{ formatPrice(selectedOrder?.paymentDetails?.amountReceived) }}
+            </span>
+          </p>
+          <!-- Change -->
+          <p>
+            <strong>Change:</strong>
+            <span style="margin-left: 1rem">
+              ฿ {{ formatPrice(selectedOrder?.paymentDetails?.change) }}
+            </span>
+          </p>
+        </div>
+        <div v-else-if="selectedOrder.paymentDetails.method === 'qr'">
+          <!-- Payment Account Details -->
+          <p>
+            <strong>Payment Account:</strong>
+            <span style="margin-left: 1rem">
+              {{ selectedOrder?.paymentDetails?.account || "N/A" }}
+            </span>
+          </p>
+        </div>
       </div>
 
       <Divider />
