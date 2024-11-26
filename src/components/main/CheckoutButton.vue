@@ -80,9 +80,20 @@
     <div v-else-if="paymentMethod === 'qr'" class="qr-payment-section">
       <h3>QR Payment</h3>
       <p>Total Amount: ฿{{ formatPrice(menuStore.total) }}</p>
-      <div class="qr-code-container">
-        <img :src="qrCodeDataUrl" alt="QR Code" class="qr-code-image" />
-      </div>
+      <Card class="qr-payment-card">
+        <template #content class="qr-image-container">
+          <p>Scan the QR code to pay with PromptPay.</p>
+          <img
+            src="/src/assets/images/promptpay-logo.png"
+            alt="PromptPay Logo"
+            class="PromptPay-logo"
+          />
+          <img :src="qrCodeDataUrl" alt="QR Code" class="qr-code-image" />
+          <p class="mono-fonts" style="font-weight: 700">
+            Total Amount: ฿{{ formatPrice(menuStore.total) }}
+          </p>
+        </template>
+      </Card>
     </div>
 
     <!-- Dialog footer with Finish and Cancel buttons -->
@@ -321,5 +332,31 @@ function resetDialog() {
 .change-display-amount > p {
   text-align: center;
   font-size: 1.5rem;
+}
+
+.qr-payment-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 1px solid var(--border-color);
+}
+
+.PromptPay-logo,
+.qr-code-image {
+  display: block;
+  margin: 0 auto;
+  width: 50%;
+  height: auto;
+}
+
+.PromptPay-logo {
+  z-index: 9;
+  margin-bottom: -1rem;
+}
+
+.qr-code-image {
+  z-index: 10;
 }
 </style>
