@@ -76,11 +76,13 @@
       </div>
     </div>
 
-    <!-- If QR payment, show total amount -->
+    <!-- QR Payment Section -->
     <div v-else-if="paymentMethod === 'qr'" class="qr-payment-section">
       <h3>QR Payment</h3>
       <p>Total Amount: ฿{{ formatPrice(menuStore.total) }}</p>
-      <!-- Optionally, you can display a QR code here -->
+      <div class="qr-code-container">
+        <img :src="qrCodeDataUrl" alt="QR Code" class="qr-code-image" />
+      </div>
     </div>
 
     <!-- Dialog footer with Finish and Cancel buttons -->
@@ -115,15 +117,22 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { useMenuStore } from "@/stores/useMenuStore";
+import generatePayload from "promptpay-qr";
+import QRCode from "qrcode";
 
 const menuStore = useMenuStore();
 
 const showDialog = ref(false);
 const paymentMethod = ref(null);
-const amountReceivedDisplay = ref(""); // String to handle display
-const amountReceived = ref(0); // Numeric value for calculations
+
+// Cash Payment Variables
+const amountReceivedDisplay = ref("");
+const amountReceived = ref(0);
+
+// QR Payment Variables
+const qrCodeDataUrl = ref("");
 
 // Number pad buttons
 const padButtons = [
@@ -181,6 +190,28 @@ const canFinish = computed(() => {
 function onCancel() {
   resetDialog();
 }
+
+// Watch payment method selection to generate QR code
+watch(
+  () => paymentMethod.value,
+  async (newMethod) => {
+    if (newMethod === "qr") {
+      // Generate PromptPay QR code
+      const mobileNumber = "0804920305"; // Replace with your PromptPay number (without dashes)
+      const amount = menuStore.total;
+      const payload = generatePayload(mobileNumber, { amount });
+
+      // Generate QR code data URL
+      try {
+        qrCodeDataUrl.value = await QRCode.toDataURL(payload);
+      } catch (error) {
+        console.error("Error generating QR code:", error);
+      }
+    } else {
+      qrCodeDataUrl.value = "";
+    }
+  }
+);
 
 // Handle finish action and save payment details
 function onFinish() {
