@@ -202,13 +202,15 @@ function onCancel() {
   resetDialog();
 }
 
+const promptpayAccount = "0804920305"; // Replace with your PromptPay number (without dashes)
+
 // Watch payment method selection to generate QR code
 watch(
   () => paymentMethod.value,
   async (newMethod) => {
     if (newMethod === "qr") {
       // Generate PromptPay QR code
-      const mobileNumber = "0804920305"; // Replace with your PromptPay number (without dashes)
+      const mobileNumber = promptpayAccount; // Replace with your PromptPay number (without dashes)
       const amount = menuStore.total;
       const payload = generatePayload(mobileNumber, { amount });
 
@@ -231,6 +233,7 @@ function onFinish() {
     method: paymentMethod.value,
     amountReceived: amountReceived.value,
     change: change.value,
+    account: promptpayAccount, // Replace with your PromptPay number (without dashes)
   };
 
   // Call checkout with payment details

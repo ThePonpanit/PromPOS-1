@@ -52,6 +52,18 @@
 
     <Column field="timestampUTC7" header="Timestamp"></Column>
 
+    <Column header="Payment Type">
+      <template #body="{ data }">
+        <span class="mono-fonts" style="margin-right: 1rem">
+          <span v-if="data.paymentDetails.method === 'cash'">Cash</span>
+          <span v-else-if="data.paymentDetails.method === 'qr'">
+            Promptpay QR
+          </span>
+          <span v-else> N/A </span>
+        </span></template
+      >
+    </Column>
+
     <Column header="Order Status">
       <template #body="{ data }">
         <span
