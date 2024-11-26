@@ -26,7 +26,7 @@
       </tr>
     </template>
 
-    <Column header="Local ID">
+    <Column header="Local ID" v-if="false">
       <template #body="{ data }">
         <span>{{ data.localID || "N/A" }}</span>
       </template>

@@ -21,7 +21,7 @@
         <span>{{ data.localID || "N/A" }}</span>
       </template>
     </Column>
-    <Column header="Database ID">
+    <Column header="Database ID" v-if="false">
       <template #body="{ data }">
         <span>{{ data.id || "N/A" }}</span>
       </template>
