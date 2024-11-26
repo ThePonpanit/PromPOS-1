@@ -41,15 +41,26 @@ const menuItems = computed(() => [
     },
     class: currentRoute.path === "/" ? "nav-active-menu" : "",
   },
+
   {
-    label: "About",
-    icon: "pi pi-info-circle",
+    label: "Orders",
+    icon: "pi pi-shopping-cart",
     command: () => {
-      if (currentRoute.path !== "/about") {
-        router.push("/about");
+      if (currentRoute.path !== "/orders") {
+        router.push("/orders");
       }
     },
-    class: currentRoute.path === "/about" ? "nav-active-menu" : "",
+    class: currentRoute.path === "/orders" ? "nav-active-menu" : "",
+  },
+  {
+    label: "Summary",
+    icon: "pi pi-list",
+    command: () => {
+      if (currentRoute.path !== "/summary") {
+        router.push("/summary");
+      }
+    },
+    class: currentRoute.path === "/summary" ? "nav-active-menu" : "",
   },
   {
     label: "Health Check",
@@ -61,16 +72,6 @@ const menuItems = computed(() => [
     },
     class:
       currentRoute.path === "/firestore-health-check" ? "nav-active-menu" : "",
-  },
-  {
-    label: "Orders",
-    icon: "pi pi-shopping-cart",
-    command: () => {
-      if (currentRoute.path !== "/orders") {
-        router.push("/orders");
-      }
-    },
-    class: currentRoute.path === "/orders" ? "nav-active-menu" : "",
   },
 ]);
 </script>
