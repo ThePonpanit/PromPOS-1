@@ -35,11 +35,14 @@ function formatPrice(price) {
 
 <style scoped>
 .menu-list {
+  display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .menu-list h2 {
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
+  font-size: 1.5rem; /* Base font size */
 }
 
 .menu-items {
@@ -53,31 +56,88 @@ function formatPrice(price) {
   width: 200px;
   background-color: var(--surface-0);
   color: var(--text-color);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .clickable-card {
   cursor: pointer;
   border: 2px solid var(--card-border-color);
-  padding: 1px;
+  padding: 0.35rem;
+  border-radius: 8px;
 }
 
 .clickable-card:hover {
   box-shadow: 0 0 10px var(--shadow-color);
-  border-color: #00ff9c;
+  border-color: var(--secondary-color-green);
 }
 
 .clickable-card:active {
   box-shadow: 0 0 5px var(--shadow-color);
-  scale: 0.95;
+  transform: scale(0.95);
   transition: all 0.1s ease-out;
 }
 
 .menu-item-image {
   width: 100%;
   height: auto;
+  border-radius: 8px 8px 0 0;
 }
 
-img {
-  border-radius: 8px 8px 0 0;
+/* Typography */
+.card-title {
+  font-size: 1.25rem; /* 20px */
+  margin: 0.5rem 0 0.25rem 0;
+}
+
+.card-subtitle {
+  font-size: 1rem; /* 16px */
+  color: var(--primary-color);
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 1180px) {
+  .menu-card {
+    width: 30%; /* Adjust card width to 45% for two cards per row */
+    max-width: 230px; /* Optional: Set a maximum width */
+  }
+
+  .menu-list h2 {
+    font-size: 1.25rem; /* 20px */
+  }
+
+  .card-title {
+    font-size: 1rem; /* 17.6px */
+  }
+
+  .card-subtitle {
+    font-size: 0.8rem; /* 14.4px */
+  }
+
+  .clickable-card {
+    padding: 0.2rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .menu-card {
+    width: 50%; /* Single column layout on very small screens */
+    max-width: 100%;
+  }
+
+  .menu-list h2 {
+    font-size: 1.1rem; /* 17.6px */
+  }
+
+  .card-title {
+    font-size: 1rem; /* 16px */
+  }
+
+  .card-subtitle {
+    font-size: 0.85rem; /* 13.6px */
+  }
+
+  .clickable-card {
+    padding: 0.3rem;
+  }
 }
 </style>
