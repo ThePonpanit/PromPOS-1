@@ -13,6 +13,7 @@
         scrollable
         scrollHeight="50vh"
         style="overflow-y: auto"
+        class="summary-table-items"
       >
         <template #empty>
           <tr
@@ -28,28 +29,33 @@
           field="name"
           header="Item Name"
           :style="{ width: '45%' }"
+          class="items-name-column"
         ></Column>
+
         <Column header="Price" :style="{ width: '15%' }">
-          <template #body="slotProps"
-            >฿{{ formatPrice(slotProps.data.price) }}</template
-          >
+          <template #body="slotProps">{{
+            formatPrice(slotProps.data.price)
+          }}</template>
         </Column>
-        <Column header="Quantity" :style="{ width: '15%' }">
+
+        <Column header="Qty" :style="{ width: '15%' }">
           <template #body="slotProps">{{ slotProps.data.quantity }}</template>
         </Column>
-        <Column header="Total Price" :style="{ width: '15%' }">
-          <template #body="slotProps"
-            >฿{{ formatPrice(slotProps.data.totalPrice) }}</template
-          >
+
+        <Column header="Total" :style="{ width: '15%' }">
+          <template #body="slotProps">{{
+            formatPrice(slotProps.data.totalPrice)
+          }}</template>
         </Column>
-        <Column header="Actions" :style="{ width: '10%' }">
+
+        <Column header="Actions" :style="{ width: '10%', textAlign: 'center' }">
           <template #body="slotProps">
             <Button
-              icon="pi pi-minus"
               @click="menuStore.removeItem(slotProps.data.id)"
               severity="danger"
-              rounded
-              outlined
+              text
+              icon="pi pi-trash"
+              class="action-button"
             />
           </template>
         </Column>
@@ -62,10 +68,12 @@
           severity="danger"
           rounded
           outlined
-          style="margin-left: -1rem"
           :disabled="menuStore.totalItems === 0"
+          class="empty-cart-button"
         >
-          <span class="material-icons">remove_shopping_cart</span>
+          <span class="material-icons empty-cart-icon"
+            >remove_shopping_cart</span
+          >
           <span>Empty Cart</span>
         </Button>
         <div style="display: flex">
@@ -193,5 +201,34 @@ function formatPrice(price) {
 .sum-value {
   color: green;
   font-weight: bold;
+}
+
+/* adj fonts size in the smaller screen */
+@media screen and (max-width: 1185px) {
+  .summary-card h1 {
+    font-size: 1.25rem;
+    margin-top: 1rem;
+  }
+
+  .summary-label {
+    font-size: 0.75rem;
+  }
+
+  .empty-cart-button {
+    font-size: 0.75rem;
+  }
+
+  .empty-cart-icon {
+    font-size: 1.2rem;
+  }
+
+  .summary-table-items {
+    font-size: 0.75rem;
+  }
+
+  .action-button {
+    width: 20px;
+    height: 20px;
+  }
 }
 </style>
