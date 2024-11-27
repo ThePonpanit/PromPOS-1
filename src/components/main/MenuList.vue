@@ -131,19 +131,22 @@ function formatClickCount(count) {
 
 /* Badge Styling */
 .badge {
+  font-family: "Roboto Mono", monospace, sans-serif;
+  font-size: 1.5rem !important;
   position: absolute;
-  top: 8px;
-  right: 8px;
-  background-color: var(--secondary-color-green);
+  top: 1px;
+  right: 1px;
   color: #fff;
-  border-radius: 50%;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
   font-weight: bold;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  background-color: var(--secondary-color-green);
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+
+  /* display */
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
 /* Typography */
