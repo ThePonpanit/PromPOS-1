@@ -14,9 +14,45 @@ import {
   runTransaction,
 } from "firebase/firestore";
 
+// Toast
+import { useToast } from "primevue/usetoast";
+
 export const useMenuStore = defineStore(
   "menuStore",
   () => {
+    // Initialize the Toast instance
+    const toast = useToast();
+
+    /**
+     * Displays a success Toast notification.
+     *
+     * @param {string} summary - The summary/title of the Toast.
+     * @param {string} detail - The detailed message of the Toast.
+     */
+    function showSuccess(summary, detail) {
+      toast.add({
+        severity: "success",
+        summary: summary,
+        detail: detail,
+        life: 3000,
+      });
+    }
+
+    /**
+     * Displays an error Toast notification.
+     *
+     * @param {string} summary - The summary/title of the Toast.
+     * @param {string} detail - The detailed message of the Toast.
+     */
+    function showError(summary, detail) {
+      toast.add({
+        severity: "error",
+        summary: summary,
+        detail: detail,
+        life: 5000,
+      });
+    }
+
     // **State**
 
     // Menu items
@@ -167,6 +203,12 @@ export const useMenuStore = defineStore(
           console.error("Transaction failed: ", e);
           // If transaction fails, set orderId to 'n/a' and handle it in syncOrders
           orderId = "n/a";
+          // Show error toast
+          showError(
+            "Checkout Failed",
+            "Failed to generate order ID. Please try again."
+          );
+          return; // Exit the function early since checkout failed
         }
       } else {
         // Offline: set orderId to 'n/a'
@@ -247,12 +289,28 @@ export const useMenuStore = defineStore(
           // Update order status in the store
           updateOrderSendStatus(order.id, "sent");
           console.log(`Order ${order.id} sent successfully.`);
+
+          // Show success toast
+          showSuccess(
+            "Checkout Successful",
+            `Your order (${order.id}) has been placed.`
+          );
         } catch (error) {
           console.error("Error sending order:", error);
-          // Order will be synced later
+          // Show error toast
+          showError(
+            "Checkout Failed",
+            "Failed to send your order. It will be retried later."
+          );
+          // Optionally, implement retry logic or mark the order for synchronization
         }
       } else {
         console.log("Offline mode: Order saved locally with localID:", localID);
+        // Show success toast for offline checkout
+        showSuccess(
+          "Checkout Successful (Offline)",
+          `Your order has been saved locally with ID: ${order.localID}. It will be synced when you're back online.`
+        );
       }
     }
 

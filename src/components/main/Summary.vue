@@ -56,6 +56,7 @@
               text
               icon="pi pi-trash"
               class="action-button"
+              style="padding: 0"
             />
           </template>
         </Column>

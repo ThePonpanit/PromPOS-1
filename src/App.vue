@@ -1,4 +1,5 @@
 <template>
+  <Toast position="bottom-right" />
   <div id="app">
     <!-- Sticky Header -->
     <header>

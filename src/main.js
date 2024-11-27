@@ -61,6 +61,8 @@ import InputNumber from "primevue/inputnumber";
 import InputText from "primevue/inputtext";
 import Badge from "primevue/badge";
 import OverlayBadge from "primevue/overlaybadge";
+import Toast from "primevue/toast";
+import ToastService from "primevue/toastservice";
 
 // import Firebase
 import "./firebase/init.js";
@@ -98,6 +100,10 @@ app.component("InputNumber", InputNumber);
 app.component("InputText", InputText);
 app.component("Badge", Badge);
 app.component("OverlayBadge", OverlayBadge);
+app.component("Toast", Toast);
+
+// Toast Service
+app.use(ToastService);
 
 // Pinia
 const pinia = createPinia();
