@@ -65,13 +65,13 @@
     <Column header="Payment Type">
       <template #body="{ data }">
         <span class="mono-fonts" style="margin-right: 1rem">
-          <span v-if="data.paymentDetails.method === 'cash'">Cash</span>
-          <span v-else-if="data.paymentDetails.method === 'qr'">
-            Promptpay QR
-          </span>
+          <span v-if="data.paymentDetails?.method === 'cash'">Cash</span>
+          <span v-else-if="data.paymentDetails?.method === 'qr'"
+            >Promptpay QR</span
+          >
           <span v-else> N/A </span>
-        </span></template
-      >
+        </span>
+      </template>
     </Column>
 
     <Column header="Order Status">
@@ -190,7 +190,7 @@
             </span>
           </p>
         </div>
-        <div v-else-if="selectedOrder.paymentDetails.method === 'qr'">
+        <div v-else-if="selectedOrder.paymentDetails?.method === 'qr'">
           <!-- Payment Account Details -->
           <p>
             <strong>Payment Account:</strong>

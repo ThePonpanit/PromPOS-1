@@ -55,8 +55,8 @@
     <Column header="Payment Type">
       <template #body="{ data }">
         <span class="mono-fonts" style="margin-right: 1rem">
-          <span v-if="data.paymentDetails.method === 'cash'">Cash</span>
-          <span v-else-if="data.paymentDetails.method === 'qr'">
+          <span v-if="data.paymentDetails?.method === 'cash'">Cash</span>
+          <span v-else-if="data.paymentDetails?.method === 'qr'">
             Promptpay QR
           </span>
           <span v-else> N/A </span>
@@ -154,17 +154,17 @@
         <p>
           <strong>Payment Method:</strong>
           <span style="margin-left: 1rem">
-            <span v-if="selectedOrder.paymentDetails.method === 'cash'"
+            <span v-if="selectedOrder.paymentDetails?.method === 'cash'"
               >Cash</span
             >
-            <span v-else-if="selectedOrder.paymentDetails.method === 'qr'">
+            <span v-else-if="selectedOrder.paymentDetails?.method === 'qr'">
               Promptpay QR
             </span>
             <span v-else> N/A </span>
           </span>
         </p>
 
-        <div v-if="selectedOrder.paymentDetails.method === 'cash'">
+        <div v-if="selectedOrder.paymentDetails?.method === 'cash'">
           <!-- Payment Details -->
           <p>
             <strong>Amount Received:</strong>
@@ -180,7 +180,7 @@
             </span>
           </p>
         </div>
-        <div v-else-if="selectedOrder.paymentDetails.method === 'qr'">
+        <div v-else-if="selectedOrder.paymentDetails?.method === 'qr'">
           <!-- Payment Account Details -->
           <p>
             <strong>Payment Account:</strong>

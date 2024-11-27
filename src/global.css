@@ -1,4 +1,7 @@
 :root {
+  /* Base Font Size */
+  font-size: 16px;
+
   /* Base Font Styles */
   font-family: "Prompt", "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -134,4 +137,48 @@ html,
 .loading .p-datatable-tbody > tr:hover {
   background-color: transparent !important;
   cursor: not-allowed; /* Optional: Change cursor to indicate no interaction */
+}
+
+/* Styles for screens 1180px and below */
+@media screen and (max-width: 1180px) {
+  :root {
+    font-size: 14px; /* Decrease base font size */
+  }
+
+  /* Adjust specific elements if needed */
+  body {
+    padding: 0.25rem; /* Reduce padding */
+  }
+
+  /* Example: Adjust images */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Example: Adjust headings */
+  h1 {
+    font-size: 1.75rem; /* Scale down from 2rem */
+  }
+
+  h2 {
+    font-size: 1.5rem; /* Scale down from 1.75rem */
+  }
+
+  /* Adjust PrimeVue components if necessary */
+  .p-button {
+    font-size: 0.875rem; /* Smaller buttons */
+    padding: 0.5rem 1rem;
+  }
+
+  /* Adjust table fonts */
+  .p-datatable {
+    font-size: 0.875rem;
+  }
+
+  /* Adjust navigation elements */
+  .nav-item {
+    font-size: 0.875rem;
+    padding: 0.5rem;
+  }
 }
