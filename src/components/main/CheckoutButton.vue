@@ -21,7 +21,7 @@
   >
     <!-- Payment Method Selection -->
     <div>
-      <h3>Select Payment Method</h3>
+      <h3 style="margin-bottom: 0.5rem">Select Payment Method</h3>
       <div class="field-radiobutton">
         <RadioButton
           inputId="payment1"
@@ -48,58 +48,73 @@
       </div>
     </div>
 
-    <!-- If cash, show amount received and change with number pad -->
-    <div v-if="paymentMethod === 'cash'" class="cash-payment-section">
-      <h3>Cash Payment</h3>
-      <div>
-        <p>Total Amount: ฿{{ formatPrice(menuStore.total) }}</p>
-        <p>Amount Received:</p>
-        <!-- Number Pad -->
-        <div class="number-pad">
-          <InputText
-            v-model="amountReceivedDisplay"
-            readonly
-            class="amount-display"
-          />
-          <div class="pad-buttons">
-            <Button
-              v-for="n in padButtons"
-              :key="n"
-              :label="n === 'del' ? 'Del' : n"
-              @click="onPadButtonClick(n)"
-              class="pad-button"
-              :class="{
-                'double-width': n === '0',
-                'del-button': n === 'del',
-              }"
+    <div v-if="paymentMethod">
+      <Divider />
+    </div>
+
+    <!-- Scrollable Content Container -->
+    <div ref="dialogContent">
+      <!-- If cash, show amount received and change with number pad -->
+      <div v-if="paymentMethod === 'cash'" class="cash-payment-section">
+        <h3>
+          <span>Cash Payment</span>
+          <i class="material-icons">payments</i>
+        </h3>
+        <div>
+          <p>Total Amount: ฿{{ formatPrice(menuStore.total) }}</p>
+          <p>Amount Received:</p>
+          <!-- Number Pad -->
+          <div class="number-pad">
+            <InputText
+              v-model="amountReceivedDisplay"
+              readonly
+              class="amount-display"
             />
-          </div>
-          <div class="mono-fonts change-display-amount">
-            <p v-if="change === 0">No Change</p>
-            <p v-else>Change: ฿{{ formatPrice(change) }}</p>
+            <div class="pad-buttons">
+              <Button
+                v-for="n in padButtons"
+                :key="n"
+                :label="n === 'del' ? 'Del' : n"
+                @click="onPadButtonClick(n)"
+                class="pad-button"
+                :class="{
+                  'double-width': n === '0',
+                  'del-button': n === 'del',
+                }"
+              />
+            </div>
+            <div class="mono-fonts change-display-amount">
+              <p v-if="change === 0">No Change</p>
+              <p v-else>Change: ฿{{ formatPrice(change) }}</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- QR Payment Section -->
-    <div v-else-if="paymentMethod === 'qr'" class="qr-payment-section">
-      <h3>QR Payment</h3>
-      <p>Total Amount: ฿{{ formatPrice(menuStore.total) }}</p>
-      <Card class="qr-payment-card">
-        <template #content class="qr-image-container">
-          <p>Scan the QR code to pay with PromptPay.</p>
-          <img
-            src="/src/assets/images/promptpay-logo.png"
-            alt="PromptPay Logo"
-            class="PromptPay-logo"
-          />
-          <img :src="qrCodeDataUrl" alt="QR Code" class="qr-code-image" />
-          <p class="mono-fonts" style="font-weight: 700">
-            *Total Amount: ฿{{ formatPrice(menuStore.total) }}*
-          </p>
-        </template>
-      </Card>
+      <!-- QR Payment Section -->
+      <div v-else-if="paymentMethod === 'qr'" class="qr-payment-section">
+        <h3>
+          <span> QR Payment </span>
+          <i class="material-icons">qr_code_scanner</i>
+        </h3>
+        <p>Total Amount: ฿{{ formatPrice(menuStore.total) }}</p>
+        <Card class="qr-payment-card">
+          <template #content class="qr-image-container">
+            <p>Scan the QR code to pay with PromptPay.</p>
+            <img
+              src="/src/assets/images/promptpay-logo.png"
+              alt="PromptPay Logo"
+              class="PromptPay-logo"
+            />
+            <img :src="qrCodeDataUrl" alt="QR Code" class="qr-code-image" />
+            <p class="mono-fonts" style="font-weight: 700">
+              *Total Amount: ฿{{ formatPrice(menuStore.total) }}*
+            </p>
+          </template>
+        </Card>
+      </div>
+      <!-- Scroll Target for Smooth Scrolling -->
+      <div ref="scrollTarget"></div>
     </div>
 
     <!-- Dialog footer with Finish and Cancel buttons -->
@@ -134,7 +149,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, nextTick } from "vue";
 import { useMenuStore } from "@/stores/useMenuStore";
 import generatePayload from "promptpay-qr";
 import QRCode from "qrcode";
@@ -166,6 +181,12 @@ const padButtons = [
   ".",
   "del",
 ];
+
+// Reference to the dialog content container
+const dialogContent = ref(null);
+
+// Reference to the scroll target (used for scrollIntoView)
+const scrollTarget = ref(null);
 
 // Format price to 2 decimal places with comma separators
 const formatPrice = (price) => {
@@ -228,6 +249,18 @@ watch(
       }
     } else {
       qrCodeDataUrl.value = "";
+    }
+
+    // After updating payment method, scroll to the bottom
+    await nextTick(); // Wait for DOM to update
+    if (dialogContent.value) {
+      dialogContent.value.scrollTop = dialogContent.value.scrollHeight;
+    }
+
+    // Alternatively, use scrollIntoView on the scrollTarget
+
+    if (scrollTarget.value) {
+      scrollTarget.value.scrollIntoView({ behavior: "smooth" });
     }
   }
 );
@@ -371,5 +404,11 @@ function resetDialog() {
 
 .qr-code-image {
   z-index: 10;
+}
+
+div > h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 </style>
