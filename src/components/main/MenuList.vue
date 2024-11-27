@@ -9,10 +9,31 @@
         @click="selectItem(item)"
       >
         <template #header>
-          <img :src="item.image" :alt="item.name" class="menu-item-image" />
+          <div class="image-container">
+            <img
+              :src="item.image"
+              :alt="item.name"
+              class="menu-item-image"
+              loading="lazy"
+            />
+            <!-- Badge Display -->
+            <span
+              v-if="menuStore.clickCountsMap.get(item.id) > 0"
+              class="badge"
+              :aria-label="`${formatClickCount(
+                menuStore.clickCountsMap.get(item.id)
+              )} clicks`"
+            >
+              {{ formatClickCount(menuStore.clickCountsMap.get(item.id)) }}
+            </span>
+          </div>
         </template>
-        <template #title>{{ item.name }}</template>
-        <template #subtitle> ฿ {{ formatPrice(item.price) }}</template>
+        <template #title>
+          <div class="card-title">{{ item.name }}</div>
+        </template>
+        <template #subtitle>
+          <div class="card-subtitle">฿ {{ formatPrice(item.price) }}</div>
+        </template>
       </Card>
     </div>
   </div>
@@ -20,16 +41,35 @@
 
 <script setup>
 import { useMenuStore } from "@/stores/useMenuStore";
-
 const menuStore = useMenuStore();
 
+/**
+ * Handles the selection of a menu item.
+ *
+ * @param {Object} item - The menu item that was clicked.
+ */
 function selectItem(item) {
   menuStore.addItem(item);
 }
 
-// Helper function to format price to 2 decimal places
+/**
+ * Formats the price to include commas and two decimal places.
+ *
+ * @param {number} price - The price to format.
+ * @returns {string} - The formatted price.
+ */
 function formatPrice(price) {
   return price?.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+/**
+ * Formats the click count to display "99+" if it exceeds 99.
+ *
+ * @param {number} count - The click count.
+ * @returns {string} - The formatted click count.
+ */
+function formatClickCount(count) {
+  return count > 99 ? "99+" : count;
 }
 </script>
 
@@ -64,6 +104,7 @@ function formatPrice(price) {
   border: 2px solid var(--card-border-color);
   padding: 0.35rem;
   border-radius: 8px;
+  position: relative; /* To position badge absolutely within the card */
 }
 
 .clickable-card:hover {
@@ -77,10 +118,32 @@ function formatPrice(price) {
   transition: all 0.1s ease-out;
 }
 
+.image-container {
+  position: relative; /* To position badge absolutely within the container */
+}
+
 .menu-item-image {
   width: 100%;
   height: auto;
   border-radius: 8px 8px 0 0;
+  display: block;
+}
+
+/* Badge Styling */
+.badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: var(--secondary-color-green);
+  color: #fff;
+  border-radius: 50%;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Typography */
@@ -97,7 +160,7 @@ function formatPrice(price) {
 /* Responsive Adjustments */
 @media screen and (max-width: 1180px) {
   .menu-card {
-    width: 30%; /* Adjust card width to 45% for two cards per row */
+    width: 30%; /* Adjust card width for multiple cards per row */
     max-width: 230px; /* Optional: Set a maximum width */
   }
 
@@ -115,6 +178,11 @@ function formatPrice(price) {
 
   .clickable-card {
     padding: 0.2rem;
+  }
+
+  .badge {
+    font-size: 0.7rem; /* Slightly smaller font on smaller screens */
+    padding: 0.2rem 0.4rem;
   }
 }
 

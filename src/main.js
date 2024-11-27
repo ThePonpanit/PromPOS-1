@@ -59,6 +59,8 @@ import ButtonGroup from "primevue/buttongroup";
 import RadioButton from "primevue/radiobutton";
 import InputNumber from "primevue/inputnumber";
 import InputText from "primevue/inputtext";
+import Badge from "primevue/badge";
+import OverlayBadge from "primevue/overlaybadge";
 
 // import Firebase
 import "./firebase/init.js";
@@ -94,6 +96,8 @@ app.component("ButtonGroup", ButtonGroup);
 app.component("RadioButton", RadioButton);
 app.component("InputNumber", InputNumber);
 app.component("InputText", InputText);
+app.component("Badge", Badge);
+app.component("OverlayBadge", OverlayBadge);
 
 // Pinia
 const pinia = createPinia();
