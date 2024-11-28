@@ -11,6 +11,8 @@
             gap: 1rem;
           "
         >
+          <RefreshButton />
+          <Divider layout="vertical" />
           <OrderSync />
           <ThemeSwitcher />
         </div>
@@ -25,6 +27,7 @@ import { useRouter, useRoute } from "vue-router";
 import Menubar from "primevue/menubar";
 import ThemeSwitcher from "./ThemeSwitcher.vue";
 import OrderSync from "./OrderSync.vue";
+import RefreshButton from "./main/RefreshButton.vue";
 
 const router = useRouter();
 const currentRoute = useRoute();
@@ -32,7 +35,7 @@ const currentRoute = useRoute();
 // Define menu items for the Menubar
 const menuItems = computed(() => [
   {
-    label: "Home",
+    label: "Shop",
     icon: "pi pi-home",
     command: () => {
       if (currentRoute.path !== "/") {

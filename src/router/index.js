@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import OrdersView from "@/views/OrdersView.vue";
-import SummaryView from "@/views/SummaryView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,9 +12,6 @@ const router = createRouter({
     {
       path: "/about",
       name: "about",
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import("../views/AboutView.vue"),
     },
     {
@@ -27,12 +22,18 @@ const router = createRouter({
     {
       path: "/orders",
       name: "orders",
-      component: OrdersView,
+      component: () => import("../views/OrdersView.vue"),
     },
     {
       path: "/summary",
       name: "summary",
       component: () => import("../views/SummaryView.vue"),
+    },
+    // Catch-all route for 404
+    {
+      path: "/:pathMatch(.*)*",
+      name: "not-found",
+      component: () => import("../views/NotFoundView.vue"),
     },
   ],
 });
