@@ -160,10 +160,10 @@ import ProgressSpinner from "primevue/progressspinner";
 const props = defineProps({
   orders: {
     type: Array,
-    default: () => [], // Default to an empty array
+    default: () => [],
   },
   selectedDate: {
-    type: String,
+    type: String, // Ensure this matches your expected input
     required: true,
   },
 });
