@@ -7,6 +7,7 @@
       appendTo="body"
       dateFormat="yy/mm/dd"
       placeholder="Select a date"
+      showButtonBar
     />
     <OrdersSummary
       :orders="orders"
