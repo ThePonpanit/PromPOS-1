@@ -61,7 +61,7 @@
           <i class="material-icons">payments</i>
         </h3>
         <div>
-          <p>Total Amount: ฿{{ formatPrice(menuStore.total) }}</p>
+          <p>Total Amount: ฿{{ formatPrice(menuStore.totalWithVAT) }}</p>
           <p>Amount Received:</p>
           <!-- Number Pad -->
           <div class="number-pad">
@@ -97,7 +97,7 @@
           <span> QR Payment </span>
           <i class="material-icons">qr_code_scanner</i>
         </h3>
-        <p>Total Amount: ฿{{ formatPrice(menuStore.total) }}</p>
+        <p>Total Amount: ฿{{ formatPrice(menuStore.totalWithVAT) }}</p>
         <Card class="qr-payment-card">
           <template #content class="qr-image-container">
             <p>Scan the QR code to pay with PromptPay.</p>
@@ -108,7 +108,7 @@
             />
             <img :src="qrCodeDataUrl" alt="QR Code" class="qr-code-image" />
             <p class="mono-fonts" style="font-weight: 700">
-              *Total Amount: ฿{{ formatPrice(menuStore.total) }}*
+              *Total Amount: ฿{{ formatPrice(menuStore.totalWithVAT) }}*
             </p>
           </template>
         </Card>
@@ -209,7 +209,7 @@ function onPadButtonClick(value) {
 // Compute change for cash payments
 const change = computed(() => {
   if (paymentMethod.value === "cash") {
-    return amountReceived.value - menuStore.total;
+    return amountReceived.value - menuStore.totalWithVAT;
   }
   return 0;
 });
@@ -217,7 +217,9 @@ const change = computed(() => {
 // Determine if the Finish button should be enabled
 const canFinish = computed(() => {
   if (paymentMethod.value === "cash") {
-    return amountReceived.value >= menuStore.total && amountReceived.value > 0;
+    return (
+      amountReceived.value >= menuStore.totalWithVAT && amountReceived.value > 0
+    );
   } else if (paymentMethod.value === "qr") {
     return true;
   }
@@ -237,8 +239,8 @@ watch(
   async (newMethod) => {
     if (newMethod === "qr") {
       // Generate PromptPay QR code
-      const mobileNumber = promptpayAccount; // Replace with your PromptPay number (without dashes)
-      const amount = menuStore.total;
+      const mobileNumber = promptpayAccount;
+      const amount = menuStore.totalWithVAT;
       const payload = generatePayload(mobileNumber, { amount });
 
       // Generate QR code data URL
@@ -258,7 +260,6 @@ watch(
     }
 
     // Alternatively, use scrollIntoView on the scrollTarget
-
     if (scrollTarget.value) {
       scrollTarget.value.scrollIntoView({ behavior: "smooth" });
     }

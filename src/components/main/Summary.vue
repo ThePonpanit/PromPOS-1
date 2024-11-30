@@ -61,9 +61,15 @@
           </template>
         </Column>
       </DataTable>
-
-      <!-- Footer Summary -->
-      <div class="summary-footer">
+      <!-- Empty cart Button -->
+      <div
+        style="
+          margin-top: 1vh;
+          display: flex;
+          justify-content: end;
+          align-items: center;
+        "
+      >
         <Button
           @click="menuStore.removeAllItems"
           severity="danger"
@@ -77,7 +83,11 @@
           >
           <span>Empty Cart</span>
         </Button>
-        <div style="display: flex">
+      </div>
+
+      <!-- Footer Summary -->
+      <div class="summary-footer">
+        <div style="display: flex; justify-content: space-around">
           <div class="summary-item">
             <p class="summary-label">Total Items</p>
             <p class="summary-value-total-items sum-value">
@@ -85,10 +95,22 @@
             </p>
           </div>
           <Divider layout="vertical" style="margin-left: 2rem" />
+
+          <div class="summary-item">
+            <p class="summary-label">
+              VAT {{ (menuStore.vat * 100).toFixed(0) }}%
+            </p>
+            <p class="summary-value sum-value">
+              {{ formatPrice(vatAmount) }}
+            </p>
+          </div>
+
+          <Divider layout="vertical" style="margin-left: 2rem" />
+
           <div class="summary-item">
             <p class="summary-label">Total Amount</p>
             <p class="summary-value sum-value">
-              {{ valueNumberFormat(menuStore.total) }}
+              {{ formatPrice(totalAmountWithVAT) }}
             </p>
           </div>
         </div>
@@ -99,17 +121,20 @@
 
 <script setup>
 import { useMenuStore } from "@/stores/useMenuStore.js";
-import { valueNumberFormatter } from "./utils/valueNumberFormatter.js";
+import { computed } from "vue";
 
 const menuStore = useMenuStore();
-
-// Direct usage of the valueNumberFormatter function
-const valueNumberFormat = valueNumberFormatter;
 
 // Helper function to format price to 2 decimal places
 function formatPrice(price) {
   return price?.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
+// Compute VAT amount (7% of menuStore.total)
+const vatAmount = computed(() => menuStore.total * menuStore.vat);
+
+// Compute total amount including VAT
+const totalAmountWithVAT = computed(() => menuStore.total + vatAmount.value);
 </script>
 
 <style scoped>
@@ -158,9 +183,6 @@ function formatPrice(price) {
 
 .summary-footer {
   font-family: "Roboto Mono", monospace;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   margin-top: 1vh;
 }
 

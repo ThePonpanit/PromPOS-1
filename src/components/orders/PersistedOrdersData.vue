@@ -45,7 +45,7 @@
     <Column header="Grand Total" style="text-align: right">
       <template #body="{ data }">
         <span class="mono-fonts" style="margin-right: 1rem">
-          {{ formatPrice(data.total) ?? 0 }}
+          {{ formatPrice((data.total || 0) + (data.vatAmount ?? 0)) }}
         </span>
       </template>
     </Column>
@@ -142,11 +142,32 @@
           </span>
         </p>
 
+        <!-- Total -->
+        <p>
+          <strong>Total:</strong>
+          <span class="mono-fonts">
+            ฿ {{ formatPrice(selectedOrder?.total) || "N/A" }}
+          </span>
+        </p>
+
+        <!-- VAT Amount -->
+        <p>
+          <strong>VAT Amount:</strong>
+          <span class="mono-fonts">
+            ฿ {{ formatPrice(selectedOrder?.vatAmount) || "N/A" }}
+          </span>
+        </p>
+
         <!-- Grand Total -->
         <p>
           <strong>Grand Total:</strong>
           <span class="grand-total mono-fonts">
-            ฿ {{ formatPrice(selectedOrder?.total) || "N/A" }}
+            ฿
+            {{
+              formatPrice(
+                (selectedOrder.total || 0) + (selectedOrder.vatAmount ?? 0)
+              ) || "N/A"
+            }}
           </span>
         </p>
 

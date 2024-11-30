@@ -219,6 +219,9 @@ export const useMenuStore = defineStore(
         id: orderId, // 'n/a' if offline
         localID: localID, // Unique local ID
         total: total.value,
+        vat: vat, // VAT rate
+        vatAmount: vatAmount.value, // VAT amount
+        totalWithVAT: totalWithVAT.value,
         sendStatus: "pending",
         timestampUTC7: new Date().toLocaleString("en-US", {
           timeZone: "Asia/Bangkok",
@@ -432,13 +435,22 @@ export const useMenuStore = defineStore(
       }))
     );
 
-    // Total amount
+    // Total amount without VAT
     const total = computed(() =>
       selectedItems.value.reduce(
         (sum, item) => sum + item.price * item.quantity,
         0
       )
     );
+
+    // VAT value
+    const vat = 0.1;
+
+    // VAT amount (7% of total)
+    const vatAmount = computed(() => total.value * vat);
+
+    // Total amount including VAT
+    const totalWithVAT = computed(() => total.value + vatAmount.value);
 
     // Total items (sum of quantities)
     const totalItems = computed(() =>
@@ -466,6 +478,7 @@ export const useMenuStore = defineStore(
       menuItems,
       selectedItems,
       orders,
+      vat,
 
       // Actions
       addItem,
@@ -482,6 +495,8 @@ export const useMenuStore = defineStore(
       total,
       totalItems,
       clickCountsMap, // Expose the click counts map for components to use
+      totalWithVAT,
+      vatAmount,
     };
   },
   {
