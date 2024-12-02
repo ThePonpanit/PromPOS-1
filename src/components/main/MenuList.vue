@@ -1,6 +1,6 @@
 <template>
   <div class="menu-list">
-    <h2>Menu</h2>
+    <h2 style="text-decoration: underline">Menu List</h2>
     <div class="menu-items">
       <Card
         v-for="item in menuStore.menuItems"
@@ -78,6 +78,7 @@ function formatClickCount(count) {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 0 !important;
 }
 
 .menu-list h2 {
@@ -93,7 +94,8 @@ function formatClickCount(count) {
 }
 
 .menu-card {
-  width: 200px;
+  width: 170px;
+  height: fit-content;
   background-color: var(--surface-0);
   color: var(--text-color);
   transition: transform 0.2s, box-shadow 0.2s;
@@ -164,7 +166,7 @@ function formatClickCount(count) {
 @media screen and (max-width: 1180px) {
   .menu-card {
     width: 30%; /* Adjust card width for multiple cards per row */
-    max-width: 230px; /* Optional: Set a maximum width */
+    max-width: 210px; /* Optional: Set a maximum width */
   }
 
   .menu-list h2 {
