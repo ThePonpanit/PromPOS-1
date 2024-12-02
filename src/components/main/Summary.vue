@@ -60,6 +60,34 @@
             />
           </template>
         </Column>
+
+        <template #footer v-if="menuStore.selectedItemsWithTotal.length > 0">
+          <div
+            style="
+              display: flex;
+              justify-content: space-around;
+              font-size: 14px;
+              padding: 0;
+              margin: 0;
+            "
+          >
+            <!-- count total row of the table -->
+            <p>
+              Total Items:
+              <span class="table-footer-content">{{
+                menuStore.selectedItemsWithTotal.length
+              }}</span>
+            </p>
+
+            <!-- Show all items count -->
+            <p>
+              Total Quantity:
+              <span class="table-footer-content">
+                {{ menuStore.totalItems }}
+              </span>
+            </p>
+          </div>
+        </template>
       </DataTable>
       <!-- Empty cart Button -->
       <div
@@ -88,12 +116,15 @@
       <!-- Footer Summary -->
       <div class="summary-footer">
         <div style="display: flex; justify-content: space-around">
-          <div class="summary-item">
-            <p class="summary-label">Total Items</p>
-            <p class="summary-value-total-items sum-value">
-              {{ menuStore.totalItems }}
-            </p>
+          <div>
+            <div class="summary-item">
+              <p class="summary-label">Subtotal</p>
+              <p class="summary-value sum-value">
+                {{ formatPrice(menuStore.total) }}
+              </p>
+            </div>
           </div>
+
           <Divider layout="vertical" style="margin-left: 2rem" />
 
           <div class="summary-item">
@@ -108,7 +139,7 @@
           <Divider layout="vertical" style="margin-left: 2rem" />
 
           <div class="summary-item">
-            <p class="summary-label">Total Amount</p>
+            <p class="summary-label">Grand Total</p>
             <p class="summary-value sum-value">
               {{ formatPrice(totalAmountWithVAT) }}
             </p>
@@ -183,7 +214,7 @@ const totalAmountWithVAT = computed(() => menuStore.total + vatAmount.value);
 
 .summary-footer {
   font-family: "Roboto Mono", monospace;
-  margin-top: 1vh;
+  margin-top: 2vh;
 }
 
 .summary-item {
@@ -213,19 +244,15 @@ const totalAmountWithVAT = computed(() => menuStore.total + vatAmount.value);
   color: var(--primary-color);
 }
 
-.summary-value-total-items {
-  margin: 0;
-  flex-basis: 100%;
-  word-break: break-word;
-  text-align: right;
-  width: 1rem;
-}
-
 .sum-value {
   color: green;
   font-weight: bold;
 }
 
+.table-footer-content {
+  font-weight: bold;
+  color: var(--primary-color);
+}
 /* adj fonts size in the smaller screen */
 @media screen and (max-width: 1185px) {
   .summary-card h1 {
