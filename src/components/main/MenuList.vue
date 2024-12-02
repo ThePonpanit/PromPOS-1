@@ -163,9 +163,9 @@ function formatClickCount(count) {
 }
 
 /* Responsive Adjustments */
-@media screen and (max-width: 1180px) {
+@media screen and (max-width: 1185px) {
   .menu-card {
-    width: 30%; /* Adjust card width for multiple cards per row */
+    width: 22%; /* Adjust card width for multiple cards per row */
     max-width: 210px; /* Optional: Set a maximum width */
   }
 

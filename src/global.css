@@ -140,8 +140,8 @@ html,
   cursor: not-allowed; /* Optional: Change cursor to indicate no interaction */
 }
 
-/* Styles for screens 1180px and below */
-@media screen and (max-width: 1180px) {
+/* Styles for screens 1185px and below */
+@media screen and (max-width: 1185px) {
   :root {
     font-size: 14px; /* Decrease base font size */
   }

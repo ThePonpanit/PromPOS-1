@@ -61,7 +61,9 @@
           <i class="material-icons">payments</i>
         </h3>
         <div>
-          <p>Total Amount: ฿{{ formatPrice(menuStore.totalWithVAT) }}</p>
+          <p class="total-amount">
+            Total Amount: ฿ {{ formatPrice(menuStore.totalWithVAT) }}
+          </p>
           <p>Amount Received:</p>
           <!-- Number Pad -->
           <div class="number-pad">
@@ -75,11 +77,13 @@
                 v-for="n in padButtons"
                 :key="n"
                 :label="n === 'del' ? 'Del' : n"
+                :icon="n === 'del' ? 'pi pi-delete-left' : ''"
                 @click="onPadButtonClick(n)"
                 class="pad-button"
                 :class="{
                   'double-width': n === '0',
                   'del-button': n === 'del',
+                  'clear-button': n === 'clear',
                 }"
               />
             </div>
@@ -179,6 +183,7 @@ const padButtons = [
   "3",
   "0",
   ".",
+  "clear",
   "del",
 ];
 
@@ -198,6 +203,10 @@ function onPadButtonClick(value) {
   if (value === "del") {
     // Delete the last character
     amountReceivedDisplay.value = amountReceivedDisplay.value.slice(0, -1);
+  } else if (value === "clear") {
+    // Reset the display and amount
+    amountReceivedDisplay.value = "";
+    amountReceived.value = 0;
   } else {
     // Append the pressed button value
     amountReceivedDisplay.value += value;
@@ -374,6 +383,18 @@ function resetDialog() {
 .del-button {
   background-color: var(--red-500);
   color: #fff;
+  grid-column: span 2;
+}
+
+.clear-button {
+  background-color: var(--blue-500);
+  color: #fff;
+}
+
+.total-amount {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: var(--primary-color);
 }
 
 .change-display-amount > p {
