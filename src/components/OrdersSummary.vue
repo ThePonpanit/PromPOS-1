@@ -16,7 +16,7 @@
             />
           </div>
         </template>
-        <template v-else>
+        <template v-else-if="props.orders.length > 0">
           <p class="amount number-fonts-family">
             {{ formatCurrency(totalSales) }}
           </p>
@@ -36,6 +36,9 @@
             </div>
           </div>
         </template>
+        <template v-else>
+          <p class="no-sales-data">No sales data available.</p>
+        </template>
       </div>
 
       <!-- Sales By Category -->
@@ -52,7 +55,7 @@
             />
           </div>
         </template>
-        <template v-else>
+        <template v-else-if="props.orders.length > 0">
           <div class="breakdown-detail" style="margin-top: 1rem">
             <span class="label">Drinks:</span>
             <span class="value number-fonts-family">
@@ -72,6 +75,9 @@
             </span>
           </div>
         </template>
+        <template v-else>
+          <p class="no-sales-data">No sales data available.</p>
+        </template>
       </div>
 
       <!-- Total Transactions -->
@@ -88,7 +94,7 @@
             />
           </div>
         </template>
-        <template v-else>
+        <template v-else-if="props.orders.length > 0">
           <p class="amount number-fonts-family">{{ totalTransactions }}</p>
           <div class="payment-breakdown">
             <h4>Transactions Breakdown</h4>
@@ -106,6 +112,9 @@
             </div>
           </div>
         </template>
+        <template v-else>
+          <p class="no-sales-data">No sales data available.</p>
+        </template>
       </div>
 
       <!-- Avg Sales Per Transaction -->
@@ -122,7 +131,7 @@
             />
           </div>
         </template>
-        <template v-else>
+        <template v-else-if="props.orders.length > 0">
           <p class="amount number-fonts-family">{{ avgSalesPerTransaction }}</p>
           <div class="payment-breakdown">
             <h4>Transactions Breakdown</h4>
@@ -145,6 +154,9 @@
               }}</span>
             </div>
           </div>
+        </template>
+        <template v-else>
+          <p class="no-sales-data">No sales data available.</p>
         </template>
       </div>
     </div>
@@ -175,7 +187,7 @@ const isLoading = ref(false);
 watch(
   () => props.orders,
   (orders) => {
-    isLoading.value = orders.length === 0;
+    (isLoading.value != orders.length) === 0;
   }
 );
 
@@ -413,6 +425,11 @@ const formatCurrency = (value) =>
 
 .avg-sales-per-transaction {
   background-color: #b1afff;
+}
+
+.no-sales-data {
+  color: #666;
+  margin-top: 2rem;
 }
 
 @media (max-width: 768px) {

@@ -1,104 +1,106 @@
 <template>
   <!-- Orders Table -->
-  <DataTable
-    :value="orders"
-    responsiveLayout="scroll"
-    scrollable
-    stripedRows
-    scrollHeight="55vh"
-    style="height: 55vh"
-    :class="{ loading: isLoading }"
-  >
-    <template #empty>
-      <!-- Loading Spinner -->
-      <div v-if="isLoading" class="loading-container">
-        <i class="pi pi-spin pi-spinner loading-icon"></i>
-        <p>Loading orders...</p>
-      </div>
+  <div class="data-table-container">
+    <DataTable
+      :value="orders"
+      responsiveLayout="scroll"
+      scrollable
+      stripedRows
+      :scrollHeight="scrollHeight"
+      class="order-table"
+      :class="{ loading: isLoading }"
+    >
+      <template #empty>
+        <!-- Loading Spinner -->
+        <div v-if="isLoading" class="loading-container">
+          <i class="pi pi-spin pi-spinner loading-icon"></i>
+          <p>Loading orders...</p>
+        </div>
 
-      <tr
-        v-else
-        style="display: flex; justify-content: center; align-items: center"
-      >
-        <td colspan="7" style="text-align: center; color: gray">
-          🚫 No orders found for the selected date.
-        </td>
-      </tr>
-    </template>
-
-    <Column header="Local ID" v-if="false">
-      <template #body="{ data }">
-        <span>{{ data.localID || "N/A" }}</span>
-      </template>
-    </Column>
-    <Column header="Database ID">
-      <template #body="{ data }">
-        <span>{{ data.id || "N/A" }}</span>
-      </template>
-    </Column>
-
-    <Column header="Data Status">
-      <template #body="{ data }">
-        <span :class="{ 'status-pending': data.sendStatus === 'pending' }">
-          <i
-            v-if="data.sendStatus === 'pending'"
-            class="pi pi-exclamation-triangle"
-          ></i>
-          {{
-            (data.sendStatus ?? "unknown").charAt(0).toUpperCase() +
-            (data.sendStatus ?? "unknown").slice(1)
-          }}
-        </span>
-      </template>
-    </Column>
-
-    <Column header="Grand Total" style="text-align: right">
-      <template #body="{ data }">
-        <span class="mono-fonts" style="margin-right: 1rem">
-          {{ formatPrice((data.total || 0) + (data.vatAmount ?? 0)) }}
-        </span>
-      </template>
-    </Column>
-
-    <Column field="timestampUTC7" header="Timestamp"></Column>
-
-    <Column header="Payment Type">
-      <template #body="{ data }">
-        <span class="mono-fonts" style="margin-right: 1rem">
-          <span v-if="data.paymentDetails?.method === 'cash'">Cash</span>
-          <span v-else-if="data.paymentDetails?.method === 'qr'"
-            >Promptpay QR</span
-          >
-          <span v-else> N/A </span>
-        </span>
-      </template>
-    </Column>
-
-    <Column header="Order Status">
-      <template #body="{ data }">
-        <span
-          :class="{
-            'status-underline-cancelled': data.orderStatus === 'cancelled',
-            'status-underline-success': data.orderStatus === 'success',
-          }"
+        <tr
+          v-else
+          style="display: flex; justify-content: center; align-items: center"
         >
-          {{ getCurrentStatusLabel(data.orderStatus ?? "unknown") }}
-        </span>
+          <td colspan="7" style="text-align: center; color: gray">
+            🚫 No orders found for the selected date.
+          </td>
+        </tr>
       </template>
-    </Column>
 
-    <!-- New Action Column -->
-    <Column header="Action">
-      <template #body="{ data }">
-        <Button
-          label="Details"
-          class="p-button-rounded p-button-info custom-edit-button"
-          @click="openDialog(data)"
-          text
-        />
-      </template>
-    </Column>
-  </DataTable>
+      <Column header="Local ID" v-if="false">
+        <template #body="{ data }">
+          <span>{{ data.localID || "N/A" }}</span>
+        </template>
+      </Column>
+      <Column header="Database ID">
+        <template #body="{ data }">
+          <span>{{ data.id || "N/A" }}</span>
+        </template>
+      </Column>
+
+      <Column header="Data Status">
+        <template #body="{ data }">
+          <span :class="{ 'status-pending': data.sendStatus === 'pending' }">
+            <i
+              v-if="data.sendStatus === 'pending'"
+              class="pi pi-exclamation-triangle"
+            ></i>
+            {{
+              (data.sendStatus ?? "unknown").charAt(0).toUpperCase() +
+              (data.sendStatus ?? "unknown").slice(1)
+            }}
+          </span>
+        </template>
+      </Column>
+
+      <Column header="Grand Total" style="text-align: right">
+        <template #body="{ data }">
+          <span class="mono-fonts" style="margin-right: 1rem">
+            {{ formatPrice((data.total || 0) + (data.vatAmount ?? 0)) }}
+          </span>
+        </template>
+      </Column>
+
+      <Column field="timestampUTC7" header="Timestamp"></Column>
+
+      <Column header="Payment Type">
+        <template #body="{ data }">
+          <span class="mono-fonts" style="margin-right: 1rem">
+            <span v-if="data.paymentDetails?.method === 'cash'">Cash</span>
+            <span v-else-if="data.paymentDetails?.method === 'qr'"
+              >Promptpay QR</span
+            >
+            <span v-else> N/A </span>
+          </span>
+        </template>
+      </Column>
+
+      <Column header="Order Status">
+        <template #body="{ data }">
+          <span
+            :class="{
+              'status-underline-cancelled': data.orderStatus === 'cancelled',
+              'status-underline-success': data.orderStatus === 'success',
+            }"
+          >
+            {{ getCurrentStatusLabel(data.orderStatus ?? "unknown") }}
+          </span>
+        </template>
+      </Column>
+
+      <!-- New Action Column -->
+      <Column header="Action">
+        <template #body="{ data }">
+          <Button
+            label="Details"
+            class="p-button-rounded p-button-info custom-edit-button"
+            @click="openDialog(data)"
+            text
+          />
+        </template>
+      </Column>
+    </DataTable>
+  </div>
 
   <!-- Dialog -->
   <Dialog
@@ -258,7 +260,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted, onUnmounted } from "vue";
 import { db } from "@/firebase/init.js"; // Firestore instance
 import { collection, getDocs } from "firebase/firestore";
 
@@ -268,6 +270,31 @@ const props = defineProps({
     type: Object,
     default: () => ({ startDate: null, endDate: null }),
   },
+});
+
+// Reactive scrollHeight
+const scrollHeight = ref("55vh");
+
+function updateScrollHeight() {
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+
+  // Set the scrollHeight based on the dimensions
+  if (height > 720 && height < 740) {
+    scrollHeight.value = "55vh"; // Fixed value for 1600x700
+  } else {
+    scrollHeight.value = "61vh"; // Default value for other resolutions
+  }
+}
+
+// Add event listener to handle resize
+onMounted(() => {
+  updateScrollHeight();
+  window.addEventListener("resize", updateScrollHeight);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("resize", updateScrollHeight);
 });
 
 // Firestore orders
@@ -389,6 +416,24 @@ const formatPrice = (price) => {
   return price?.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 </script>
+
+<style>
+/* Styles for the Table */
+.data-table-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.5vh;
+}
+
+.order-table {
+  /* add border */
+  border: 1px solid var(--border-color);
+  width: fit-content;
+  padding: 5px;
+  border-radius: 5px;
+}
+</style>
 
 <style scoped>
 .status-pending {

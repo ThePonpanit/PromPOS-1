@@ -1,93 +1,95 @@
 <template>
   <!-- Orders Table -->
-  <DataTable
-    :value="filteredOrders"
-    responsiveLayout="scroll"
-    stripedRows
-    scrollable
-    scrollHeight="55vh"
-    style="height: 55vh"
-  >
-    <template #empty>
-      <tr style="display: flex; justify-content: center; align-items: center">
-        <td colspan="5" style="text-align: center; color: gray">
-          🚫 No orders found for the selected date.
-        </td>
-      </tr>
-    </template>
-
-    <Column header="Local ID">
-      <template #body="{ data }">
-        <span>{{ data.localID || "N/A" }}</span>
+  <div class="data-table-container">
+    <DataTable
+      :value="filteredOrders"
+      responsiveLayout="scroll"
+      stripedRows
+      scrollable
+      :scrollHeight="scrollHeight"
+      class="order-table"
+    >
+      <template #empty>
+        <tr style="display: flex; justify-content: center; align-items: center">
+          <td colspan="5" style="text-align: center; color: gray">
+            🚫 No orders found for the selected date.
+          </td>
+        </tr>
       </template>
-    </Column>
-    <Column header="Database ID" v-if="false">
-      <template #body="{ data }">
-        <span>{{ data.id || "N/A" }}</span>
-      </template>
-    </Column>
 
-    <Column header="Data Status">
-      <template #body="{ data }">
-        <span :class="{ 'status-pending': data.sendStatus === 'pending' }">
-          <i
-            v-if="data.sendStatus === 'pending'"
-            class="pi pi-exclamation-triangle"
-          ></i>
-          {{
-            (data.sendStatus ?? "unknown").charAt(0).toUpperCase() +
-            (data.sendStatus ?? "unknown").slice(1)
-          }}
-        </span>
-      </template>
-    </Column>
+      <Column header="Local ID">
+        <template #body="{ data }">
+          <span>{{ data.localID || "N/A" }}</span>
+        </template>
+      </Column>
+      <Column header="Database ID" v-if="false">
+        <template #body="{ data }">
+          <span>{{ data.id || "N/A" }}</span>
+        </template>
+      </Column>
 
-    <Column header="Grand Total" style="text-align: right">
-      <template #body="{ data }">
-        <span class="mono-fonts" style="margin-right: 1rem">
-          {{ formatPrice((data.total || 0) + (data.vatAmount ?? 0)) }}
-        </span>
-      </template>
-    </Column>
-
-    <Column field="timestampUTC7" header="Timestamp"></Column>
-
-    <Column header="Payment Type">
-      <template #body="{ data }">
-        <span class="mono-fonts" style="margin-right: 1rem">
-          <span v-if="data.paymentDetails?.method === 'cash'">Cash</span>
-          <span v-else-if="data.paymentDetails?.method === 'qr'">
-            Promptpay QR
+      <Column header="Data Status">
+        <template #body="{ data }">
+          <span :class="{ 'status-pending': data.sendStatus === 'pending' }">
+            <i
+              v-if="data.sendStatus === 'pending'"
+              class="pi pi-exclamation-triangle"
+            ></i>
+            {{
+              (data.sendStatus ?? "unknown").charAt(0).toUpperCase() +
+              (data.sendStatus ?? "unknown").slice(1)
+            }}
           </span>
-          <span v-else> N/A </span>
-        </span></template
-      >
-    </Column>
+        </template>
+      </Column>
 
-    <Column header="Order Status">
-      <template #body="{ data }">
-        <span
-          :class="{
-            'status-underline-cancelled': data.orderStatus === 'cancelled',
-            'status-underline-success': data.orderStatus === 'success',
-          }"
+      <Column header="Grand Total" style="text-align: right">
+        <template #body="{ data }">
+          <span class="mono-fonts" style="margin-right: 1rem">
+            {{ formatPrice((data.total || 0) + (data.vatAmount ?? 0)) }}
+          </span>
+        </template>
+      </Column>
+
+      <Column field="timestampUTC7" header="Timestamp"></Column>
+
+      <Column header="Payment Type">
+        <template #body="{ data }">
+          <span class="mono-fonts" style="margin-right: 1rem">
+            <span v-if="data.paymentDetails?.method === 'cash'">Cash</span>
+            <span v-else-if="data.paymentDetails?.method === 'qr'">
+              Promptpay QR
+            </span>
+            <span v-else> N/A </span>
+          </span></template
         >
-          {{ getCurrentStatusLabel(data.orderStatus ?? "unknown") }}
-        </span>
-      </template>
-    </Column>
+      </Column>
 
-    <Column header="Action">
-      <template #body="{ data }">
-        <Button
-          label="Edit"
-          class="p-button-rounded p-button-info custom-edit-button"
-          @click="openDialog(data)"
-          text
-        />
-      </template>
-    </Column>
-  </DataTable>
+      <Column header="Order Status">
+        <template #body="{ data }">
+          <span
+            :class="{
+              'status-underline-cancelled': data.orderStatus === 'cancelled',
+              'status-underline-success': data.orderStatus === 'success',
+            }"
+          >
+            {{ getCurrentStatusLabel(data.orderStatus ?? "unknown") }}
+          </span>
+        </template>
+      </Column>
+
+      <Column header="Action">
+        <template #body="{ data }">
+          <Button
+            label="Edit"
+            class="p-button-rounded p-button-info custom-edit-button"
+            @click="openDialog(data)"
+            text
+          />
+        </template>
+      </Column>
+    </DataTable>
+  </div>
 
   <!-- Dialog -->
   <Dialog
@@ -278,7 +280,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useMenuStore } from "@/stores/useMenuStore";
 
 // Correctly define props
@@ -287,6 +289,31 @@ const props = defineProps({
     type: Object,
     default: () => ({ startDate: null, endDate: null }),
   },
+});
+
+// Reactive scrollHeight
+const scrollHeight = ref("55vh");
+
+function updateScrollHeight() {
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+
+  // Set the scrollHeight based on the dimensions
+  if (height > 720 && height < 740) {
+    scrollHeight.value = "55vh"; // Fixed value for 1600x700
+  } else {
+    scrollHeight.value = "61vh"; // Default value for other resolutions
+  }
+}
+
+// Add event listener to handle resize
+onMounted(() => {
+  updateScrollHeight();
+  window.addEventListener("resize", updateScrollHeight);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("resize", updateScrollHeight);
 });
 
 const menuStore = useMenuStore();
