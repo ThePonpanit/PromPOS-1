@@ -145,6 +145,7 @@
             @click="onFinish"
             :disabled="!canFinish"
             :outlined="!canFinish"
+            style="width: 50%"
           />
         </div>
       </div>
