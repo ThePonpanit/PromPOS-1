@@ -64,6 +64,8 @@ import OverlayBadge from "primevue/overlaybadge";
 import Toast from "primevue/toast";
 import ToastService from "primevue/toastservice";
 import Password from "primevue/password";
+import Avatar from "primevue/avatar";
+import Popover from "primevue/popover";
 
 // import Firebase
 import "./firebase/init.js";
@@ -103,6 +105,8 @@ app.component("Badge", Badge);
 app.component("OverlayBadge", OverlayBadge);
 app.component("Toast", Toast);
 app.component("Password", Password);
+app.component("Avatar", Avatar);
+app.component("Popover", Popover);
 
 // Toast Service
 app.use(ToastService);

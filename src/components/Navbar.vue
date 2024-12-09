@@ -2,7 +2,7 @@
   <nav>
     <Menubar :model="menuItems" class="main-navbar">
       <template #end>
-        <!-- Add the ThemeSwitcher in the right end of the Menubar -->
+        <!-- Right end of the Menubar -->
         <div
           style="
             display: flex;
@@ -14,15 +14,7 @@
           <RefreshButton />
           <Divider layout="vertical" />
           <OrderSync />
-          <Button
-            label="Logout"
-            icon="pi pi-sign-out"
-            @click="handleLogout"
-            severity="secondary"
-            rounded
-            raised
-            v-if="authStore.user"
-          />
+          <UserProfile />
           <ThemeSwitcher />
         </div>
       </template>
@@ -33,15 +25,14 @@
 <script setup>
 import { computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { useAuthStore } from "@/stores/authStore";
 import Menubar from "primevue/menubar";
 import ThemeSwitcher from "./ThemeSwitcher.vue";
 import OrderSync from "./OrderSync.vue";
 import RefreshButton from "./main/RefreshButton.vue";
+import UserProfile from "./UserProfile.vue";
 
 const router = useRouter();
 const currentRoute = useRoute();
-const authStore = useAuthStore(); // Use the auth store
 
 // Define menu items for the Menubar
 const menuItems = computed(() => [
@@ -88,16 +79,6 @@ const menuItems = computed(() => [
       currentRoute.path === "/firestore-health-check" ? "nav-active-menu" : "",
   },
 ]);
-
-// Logout function
-const handleLogout = async () => {
-  try {
-    await authStore.logout(); // Call the logout action in the auth store
-    router.push("/login"); // Redirect to the login page
-  } catch (error) {
-    console.error("Logout failed:", error);
-  }
-};
 </script>
 
 <style>
