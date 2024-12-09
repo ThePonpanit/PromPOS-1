@@ -14,6 +14,7 @@
           <RefreshButton />
           <Divider layout="vertical" />
           <OrderSync />
+          <Divider layout="vertical" />
           <UserProfile />
           <ThemeSwitcher />
         </div>

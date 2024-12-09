@@ -3,10 +3,11 @@
     <!-- Button to trigger the popover -->
     <Button
       v-if="authStore.user"
-      label="User"
+      :label="authStore.user?.displayName?.split(' ')[0] || 'User'"
       icon="pi pi-user"
       @click="toggle"
       outlined
+      rounded
     />
 
     <!-- Show login Button -->

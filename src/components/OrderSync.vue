@@ -185,7 +185,7 @@ onUnmounted(() => {
 .network-status {
   padding: 5px;
   border-radius: 10px;
-  border: 2px solid var(--border-color); /* Default border color */
+  /* border: 2px solid var(--border-color); */
 }
 
 /* Add conditional styles for online and offline states */
