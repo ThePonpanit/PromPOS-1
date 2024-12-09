@@ -2,11 +2,20 @@
   <div>
     <!-- Button to trigger the popover -->
     <Button
-      type="button"
+      v-if="authStore.user"
       label="User"
       icon="pi pi-user"
       @click="toggle"
-      class="p-button-outlined"
+      outlined
+    />
+
+    <!-- Show login Button -->
+    <Button
+      v-else
+      label="Login"
+      icon="pi pi-sign-in"
+      @click="() => router.push('/login')"
+      outlined
     />
 
     <!-- Popover content -->
@@ -80,7 +89,6 @@ const fallbackPhoto = "https://via.placeholder.com/96";
 // Computed properties for user data
 const displayName = computed(() => authStore.user?.displayName || "Guest User");
 const email = computed(() => authStore.user?.email || "No Email Available");
-const userPhoto = computed(() => authStore.user?.photoURL || fallbackPhoto);
 
 // Toggle Popover
 const toggle = (event) => {
@@ -92,23 +100,25 @@ const handleLogout = async () => {
   try {
     await authStore.logout(); // Call the logout action in the auth store
     router.push("/login"); // Redirect to the login page
+    // Close the popover after logout
+    op.value.hide();
   } catch (error) {
     console.error("Logout failed:", error);
   }
 };
 
-// Log user data and handle initial state
-onMounted(() => {
-  console.log("Initial User Data:", authStore.user);
+// // Log user data and handle initial state
+// onMounted(() => {
+//   console.log("Initial User Data:", authStore.user);
 
-  // Watch for changes in user data (optional)
-  watch(
-    () => authStore.user,
-    (newValue) => {
-      console.log("Updated User Data:", newValue);
-    }
-  );
-});
+//   // Watch for changes in user data (optional)
+//   watch(
+//     () => authStore.user,
+//     (newValue) => {
+//       console.log("Updated User Data:", newValue);
+//     }
+//   );
+// });
 </script>
 
 <style scoped>
