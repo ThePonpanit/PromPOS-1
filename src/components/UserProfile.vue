@@ -53,6 +53,16 @@
               <i class="pi pi-envelope user-icon-decoration" />
               <span>{{ email }}</span>
             </p>
+
+            <p>
+              <i class="pi pi-calendar user-icon-decoration" />
+              <span>Created At: {{ formattedCreatedAt }}</span>
+            </p>
+
+            <p>
+              <i class="pi pi-clock user-icon-decoration" />
+              <span>Last Login: {{ formattedDate }}</span>
+            </p>
           </div>
         </div>
 
@@ -107,18 +117,58 @@ const handleLogout = async () => {
   }
 };
 
-// // Log user data and handle initial state
-// onMounted(() => {
-//   console.log("Initial User Data:", authStore.user);
+// Computed property for formatted date
+const formattedDate = computed(() => {
+  const timestamp = Number(authStore.user?.metadata?.lastLoginAt);
+  if (!timestamp) {
+    return "No login timestamp available";
+  }
 
-//   // Watch for changes in user data (optional)
-//   watch(
-//     () => authStore.user,
-//     (newValue) => {
-//       console.log("Updated User Data:", newValue);
-//     }
-//   );
-// });
+  const date = new Date(timestamp);
+  const options = {
+    timeZone: "Asia/Bangkok",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  };
+  return date.toLocaleString("en-US", options); // Format to date and time only
+});
+
+// Computed property for formatted createdAt
+const formattedCreatedAt = computed(() => {
+  const timestamp = Number(authStore.user?.metadata?.createdAt);
+  if (!timestamp) {
+    return "No creation timestamp available";
+  }
+
+  const date = new Date(timestamp);
+  const options = {
+    timeZone: "Asia/Bangkok",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  };
+  return date.toLocaleString("en-US", options); // Format to date and time only
+});
+
+// // Log user data and handle initial state
+onMounted(() => {
+  console.log("Initial User Data:", authStore.user);
+
+  // Watch for changes in user data (optional)
+  watch(
+    () => authStore.user,
+    (newValue) => {
+      console.log("Updated User Data:", newValue);
+    }
+  );
+});
 </script>
 
 <style scoped>
@@ -128,10 +178,11 @@ const handleLogout = async () => {
 }
 
 .user-info > p {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   gap: 0.5rem;
   text-wrap: nowrap;
+}
+
+.user-info > p > i {
+  margin-right: 0.5rem;
 }
 </style>
