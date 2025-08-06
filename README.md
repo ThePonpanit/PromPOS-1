@@ -253,9 +253,7 @@ This project was developed as a demonstration of modern web development skills a
 
 ## 📧 Contact
 
-**Developer**: ThePonpanit  
+**Built with ❤️ by [ThePonpanit](https://github.com/ThePonpanit)**
 **Project Repository**: [PromPOS-1](https://github.com/ThePonpanit/PromPOS-1)
 
 ---
-
-_This project demonstrates advanced frontend development skills, cloud integration expertise, and modern web application architecture suitable for enterprise-level applications._
