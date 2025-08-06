@@ -50,7 +50,7 @@ export const useAuthStore = defineStore("authStore", {
         const guestUser = {
           uid: "guest-user-demo",
           email: "guest@prompos-demo.com",
-          displayName: "Guest User (HR Demo)",
+          displayName: "Guest User",
           isGuest: true,
           photoURL: null,
           emailVerified: false,

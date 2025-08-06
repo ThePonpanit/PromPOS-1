@@ -99,6 +99,7 @@ function formatClickCount(count) {
   background-color: var(--surface-0);
   color: var(--text-color);
   transition: transform 0.2s, box-shadow 0.2s;
+  user-select: none;
 }
 
 .clickable-card {
