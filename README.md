@@ -7,6 +7,12 @@
 
 A modern, responsive Point of Sale (POS) system built with Vue.js 3 and Firebase, designed for small to medium businesses. Features real-time order management, offline functionality, and comprehensive sales analytics.
 
+🌐 **Live Demo**: [https://prom-pos.web.app/](https://prom-pos.web.app/)
+
+### 🎯 For HR & Recruiters
+
+**Guest Access Available!** No registration required - simply click "Continue as Guest" to explore all features immediately. Perfect for quick evaluation and testing.
+
 ![PromPOS Banner](public/screenshots/screenshot1.png)
 
 ## 🚀 Features

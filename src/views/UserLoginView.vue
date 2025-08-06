@@ -1,5 +1,24 @@
 <template>
   <div class="card login-page">
+    <div>
+      <!-- Guest Login Section for HR/Demo -->
+      <div class="guest-section">
+        <div class="guest-info">
+          <h3>Demo Testing</h3>
+          <p>Quick access to explore all features without registration</p>
+          <Button
+            label="Continue as Guest"
+            icon="pi pi-user"
+            @click="handleGuestLogin"
+            :loading="guestLoading"
+            class="guest-button"
+            severity="success"
+            size="large"
+          />
+        </div>
+        <Divider />
+      </div>
+    </div>
     <div class="container">
       <!-- Left Section: Login Form -->
       <div class="left-section">
@@ -97,6 +116,7 @@ const authStore = useAuthStore();
 const router = useRouter();
 const email = ref("");
 const password = ref("");
+const guestLoading = ref(false);
 
 // Redirect if user is already authenticated
 onBeforeMount(() => {
@@ -104,6 +124,18 @@ onBeforeMount(() => {
     router.push("/"); // Redirect to the home page
   }
 });
+
+const handleGuestLogin = async () => {
+  guestLoading.value = true;
+  try {
+    await authStore.loginAsGuest();
+    router.push("/"); // Redirect to the home page
+  } catch (error) {
+    alert("Guest login failed. Please try again.");
+  } finally {
+    guestLoading.value = false;
+  }
+};
 
 const handleEmailLogin = async () => {
   try {
@@ -245,6 +277,61 @@ const handleGoogleLogin = async () => {
   width: auto;
   max-width: 400px;
   min-width: min-content;
+}
+
+/* Guest Section Styling */
+.guest-section {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.guest-info {
+  text-align: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #667eea20, #764ba220);
+  border-radius: 8px;
+  border: 2px dashed var(--primary-color);
+}
+
+.guest-info h3 {
+  margin: 0 0 0.5rem;
+  color: var(--primary-color);
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.guest-info p {
+  margin: 0 0 1.5rem;
+  color: var(--text-color-secondary);
+  font-size: 1rem;
+}
+
+.guest-button {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+}
+
+.guest-button:hover {
+  transform: translateY(-2px);
+  transition: all 0.2s ease;
+}
+
+/* Responsive Design for Guest Section */
+@media (max-width: 768px) {
+  .guest-info {
+    padding: 1rem;
+  }
+
+  .guest-info h3 {
+    font-size: 1.1rem;
+  }
+
+  .guest-info p {
+    font-size: 0.9rem;
+  }
 }
 
 .gsi-material-button .gsi-material-button-icon {
