@@ -383,13 +383,13 @@ function resetDialog() {
 
 .del-button {
   background-color: var(--red-500);
-  color: #fff;
+  color: var(--red-50);
   grid-column: span 2;
 }
 
 .clear-button {
   background-color: var(--blue-500);
-  color: #fff;
+  color: var(--blue-50);
 }
 
 .total-amount {
